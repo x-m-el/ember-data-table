@@ -102,7 +102,9 @@ export default class DataTable extends Component {
   }
 
   get enableSearch() {
-    return this.filter !== undefined;
+    return this.args.enableSearch === undefined
+      ? this.filter !== undefined
+      : this.args.enableSearch;
   }
 
   get autoSearch() {

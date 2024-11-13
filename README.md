@@ -192,6 +192,7 @@ How to show different things in Ember Data Table
 - `@noDataMessage` :: Custom message to show when no data is available.
   The `:no-data-message` block can be used as an alternative to provide
   styling.
+- `@enableSearch` :: Set to false to disable search in the table.
 - `@enableLineNumbers` :: Set to truthy to show line numbers in the
   table.
 - `@links` :: Each row may contain a number of links.  Different links
