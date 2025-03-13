@@ -177,7 +177,8 @@ The passing of data from route and controller, and moving data back up.
 - `@meta` :: Meta may be provided in `@content.meta` or it may be
   provided in a separate property.  If supplied, it may be used to
   determine the back-end pagination offset from
-  `@meta.links.first.number` (often `0` but sometimes `1`) and
+  `@meta.links.first.number` (often `0` but sometimes `1`), pagination in
+  `@meta.pagination` and
   amount of results as alternative to `@total` from `@meta.count`.
 
 
