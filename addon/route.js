@@ -35,12 +35,16 @@ export default class DataTableRoute extends Route {
 
   @action
   loading(transition) {
+    // eslint-disable-next-line ember/no-controller-access-in-routes
     let controller = this.controllerFor(this.routeName);
-    controller.isLoadingModel = true;
 
-    transition.promise.finally(function () {
-      controller.isLoadingModel = false;
-    });
+    if(controller) {
+      controller.isLoadingModel = true;
+
+      transition.finally(function () {
+        controller.isLoadingModel = false;
+      });
+    }
 
     return true; // bubble the loading event
   }
