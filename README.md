@@ -255,8 +255,8 @@ How to show different things in Ember Data Table
 
 - `@autoSearch` :: If truthy, search is automatically triggered
   without explicitly pressing search.  If a number is provided, this is
-  the time in milliseconds before sending the request.  If no number is
-  supplied a default is used.
+  the time in milliseconds to wait for input before sending the request (input douncing).  
+  If no number is supplied a default is used.
 - `@showMenu` :: If false, the component will hide the supplied
   menu.  This allows controlling whether the menu should be shown
   dynamically.  The menu may contain actions which act on the current

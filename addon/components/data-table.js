@@ -5,6 +5,7 @@ import { typeOf } from '@ember/utils';
 import { toComponentSpecifications, splitDefinitions } from "../utils/string-specification-helpers";
 import attributeToSortParams from "../utils/attribute-to-sort-params";
 
+const DEFAULT_DEBOUNCE_TIME = 2000;
 export default class DataTable extends Component {
   @tracked _selection = undefined;
 
@@ -48,16 +49,13 @@ export default class DataTable extends Component {
   /**
    * Calculates the search debounce time.
    *
-   * If the user supplies searchDebounceTime, that is what we should
-   * use.  A shorthand form is supported in which the user supplies a
+   * A shorthand form is supported in which the user supplies a
    * number to autoSearch in which case we use that.  This would not
    * work with 0 (which is a strange debounce time in itself) so this
    * option exists for now.
    */
   get searchDebounceTime() {
-    return this.args.searchDebounceTime === undefined
-      ? isNaN(this.args.autoSearch) ? 2000 : this.args.autoSearch
-      : this.args.searchDebounceTime;
+    return isNaN(this.args.autoSearch) ? DEFAULT_DEBOUNCE_TIME : this.args.autoSearch
   }
 
   get enableSelection() {
