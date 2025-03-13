@@ -10,7 +10,7 @@
   @sort={{@sort}}
   @filter={{@filter}}
   @meta={{@meta}}
-  @hasMenu={{@hasMenu}}
+  @showMenu={{@showMenu}}
   @enableSearch={{@enableSearch}}
   @enableSelection={{@enableSelection}}
   @noDataMessage={{@noDataMessage}}
@@ -67,36 +67,38 @@
     {{!-- END: search --}}
 
     {{!-- START: menu --}}
-    <dt.Menu as |General Selected enableSelection|>
-      {{#if (has-block "menu")}}
-        {{yield (hash General Selected enableSelection) to="menu"}}
-      {{else}}
-        <div class="data-table-menu">
-          {{!-- either we have a general block or we have to have a menu --}}
-          <General as |general|>
-            {{!-- TODO: shouldn't this be rendered when the result is empty too? Update docs! --}}
-            {{#if general.selectionIsEmpty}}
-              {{yield general to="general-menu"}}
-            {{/if}}
-          </General>
-          {{#if enableSelection}}
-            <Selected as |selected|>
-              {{#unless selected.selectionIsEmpty}}
-                {{#if (has-block "selection-menu")}}
-                  {{yield selected to="selection-menu"}}
-                {{else}}
-                  {{#if (has-block "selection-menu-actions")}}
-                    <span class="item-count">{{selected.selectionCount}} item(s) selected</span>
-                    <button type="button" {{on "click" selected.clearSelection}}>Cancel</button>
-                    {{yield selected to="selection-menu-actions"}}
+    {{#if (not-eq @showMenu false)}}
+      <dt.Menu as |General Selected enableSelection|>
+        {{#if (has-block "menu")}}
+          {{yield (hash General Selected enableSelection) to="menu"}}
+        {{else}}
+          <div class="data-table-menu">
+            {{!-- either we have a general block or we have to have a menu --}}
+            <General as |general|>
+              {{!-- TODO: shouldn't this be rendered when the result is empty too? Update docs! --}}
+              {{#if general.selectionIsEmpty}}
+                {{yield general to="general-menu"}}
+              {{/if}}
+            </General>
+            {{#if enableSelection}}
+              <Selected as |selected|>
+                {{#unless selected.selectionIsEmpty}}
+                  {{#if (has-block "selection-menu")}}
+                    {{yield selected to="selection-menu"}}
+                  {{else}}
+                    {{#if (has-block "selection-menu-actions")}}
+                      <span class="item-count">{{selected.selectionCount}} item(s) selected</span>
+                      <button type="button" {{on "click" selected.clearSelection}}>Cancel</button>
+                      {{yield selected to="selection-menu-actions"}}
+                    {{/if}}
                   {{/if}}
-                {{/if}}
-              {{/unless}}
-            </Selected>
-          {{/if}}
-        </div>
-      {{/if}}
-    </dt.Menu>
+                {{/unless}}
+              </Selected>
+            {{/if}}
+          </div>
+        {{/if}}
+      </dt.Menu>
+    {{/if}}
     {{!-- END: menu --}}
 
     {{!-- START: content --}}
