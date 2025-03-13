@@ -46,14 +46,13 @@ These steps are the same for any Ember Data Table flavour, the following visuali
 
 ```hbs
 <RawDataTable
-  @content={{model}}
+  @content={{@model}}
   @fields="label price"
   @isLoading={{this.isLoadingModel}}
   @filter={{this.filter}}
   @sort={{this.sort}}
   @page={{this.page}}
   @size={{this.size}}
-  @total={{this.total}}
   @updateFilter={{fn (mut this.filter)}}
   @updateSort={{fn (mut this.sort)}}
   @updatePage={{fn (mut this.page)}}
@@ -61,6 +60,8 @@ These steps are the same for any Ember Data Table flavour, the following visuali
 ```
 
 Visiting `http://localhost:4200/products` will now show the Raw Data Table.
+
+If the backend does not provide pagination details in `@model.meta` or total items in `@model.meta.count`, the total can be provided via `@total` to get working pagination buttons.
 
 ## How-to guides
 
