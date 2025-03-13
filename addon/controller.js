@@ -17,10 +17,6 @@ export default class DataTableController extends Controller {
       filter: this.filter,
       sort: this.sort,
       isLoading: this.isLoadingModel,
-      updatePage: (page) => this.page = page,
-      updatePageSize: (size) => this.size = size,
-      updateFilter: (filter) => this.filter = filter,
-      updateSort: (sort) => this.sort = sort
     }
   }
 }
