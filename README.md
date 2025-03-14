@@ -264,6 +264,7 @@ How to show different things in Ember Data Table
 - `@enableSelection` :: Whether items should be selectable.  Items are
   selectable across pages and may be acted on using the
   `:selection-menu-actions` or `:selection-menu` named blocks.
+- `@initialSelection` :: The selection to use as long as the user has not changed the selection yet.  
 - `@linksModelProperty` :: When a link is clicked the row must supply
   information to the link to indicate which item was clicked.  By
   default the `id` property is used but another attribute may be

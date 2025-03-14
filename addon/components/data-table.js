@@ -22,12 +22,12 @@ export default class DataTable extends Component {
   }
 
   get selection() {
-    if (this._selection === undefined && this.args.selection === undefined)
+    if (this._selection === undefined && this.args.initialSelection === undefined)
       return [];
     else if (this._selection !== undefined)
       return this._selection;
     else
-      return this.args.selection;
+      return this.args.initialSelection;
   }
 
   set selection(newSelection) {
