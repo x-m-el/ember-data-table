@@ -2,7 +2,7 @@ import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import Component from '@glimmer/component';
 import { typeOf } from '@ember/utils';
-import { toComponentSpecifications, splitDefinitions } from "../utils/string-specification-helpers";
+import { toComponentSpecifications, definitionsToArray } from "../utils/string-specification-helpers";
 import attributeToSortParams from "../utils/attribute-to-sort-params";
 
 const DEFAULT_DEBOUNCE_TIME = 2000;
@@ -159,17 +159,17 @@ export default class DataTable extends Component {
   }
 
   get customHeaders() {
-    return splitDefinitions(this.args.customHeaders);
+    return definitionsToArray(this.args.customHeaders);
   }
 
   get customFields() {
-    return splitDefinitions(this.args.customFields);
+    return definitionsToArray(this.args.customFields);
   }
 
   get sortableFields() {
     const sortableFields = this.args.sortableFields;
     if (sortableFields || sortableFields === "")
-      return splitDefinitions(sortableFields);
+      return definitionsToArray(sortableFields);
     else
       // default: all fields are sortable
       return null;

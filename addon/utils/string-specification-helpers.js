@@ -10,6 +10,17 @@ export function splitDefinitions(string) {
 }
 
 /**
+ * Splits a string of definitions by space, or returns the array directly.
+ */
+export function definitionsToArray(stringOrArray) {
+  if(Array.isArray(stringOrArray)) {
+    return stringOrArray;
+  } else {
+    return splitDefinitions(stringOrArray);
+  }
+}
+
+/**
  * Transforms __ to _ and _ to space.
  */
 export function deUnderscoreString(string) {

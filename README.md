@@ -187,10 +187,8 @@ The passing of data from route and controller, and moving data back up.
 How to show different things in Ember Data Table
 
 - `@fields` :: List of fields to render with extra options.  The fields are split by spaces.  Splitting a field with a colon (`:`) makes the first element be the attribute and the second be the label.  Use an `_` to render a space in the label. E.g.: `@fields="label:Name priceInEuros:Euro_price"`.
-- `@sortableFields` :: List of fields by which the user may sort.
-  Fields should use the attribute names of `@fields` and are split by
-  spaces.  By default all fields are sortable.  Set to an empty list to
-  disable sorting.
+- `@sortableFields` :: List or space-separated string of fields by which the user may sort.
+  Fields should use the attribute names of `@fields`.  By default all fields are sortable.  Set to an empty list or empty string to disable sorting.
 - `@noDataMessage` :: Custom message to show when no data is available.
   The `:no-data-message` block can be used as an alternative to provide
   styling.
@@ -207,7 +205,8 @@ How to show different things in Ember Data Table
   derived and no icon is shown.  The link by default receives the `id`
   of the item but this is configurable using the `@linksModelProperty`
   attribute (see below).
-- `@customHeaders` :: List of attributes for which a custom header will
+- `@customHeaders` :: List or space-separated string of attributes 
+  for which a custom header will
   be rendered through the `:data-header` named block.  Each of the
   attributes mentioned here won't render the default header but will
   instead dispatch to the named block.  Check which attribute is being
@@ -218,7 +217,8 @@ How to show different things in Ember Data Table
   ```hbs
   <RawDataTable
     ...
-    @customHeaders="label priceInEuros"
+    @customHeaders={{array "label" "priceInEuros"}}
+    <!-- or @customHeaders="label priceInEuros" -->
     ...>
     <:data-header as |header|>
       {{#if (eq header.attribute "label")}}
@@ -230,7 +230,7 @@ How to show different things in Ember Data Table
   </RawDataTable>
   ```
 
-- `@customFields` :: List of attributes for which the fields will
+- `@customFields` :: List or space-separated string of attributes for which the fields will
   receive a custom rendering.  This will render the individual cell
   values based on the `:data-cell` custom block.  You may use the
   attribute name to verify which attribute the custom block is rendering
@@ -239,7 +239,8 @@ How to show different things in Ember Data Table
   ```hbs
   <RawDataTable
     ...
-    @customFields="label priceInEuros"
+    @customFields={{array "label" "priceInEuros"}}
+    <!-- or @customFields="label priceInEuros" -->
     ...>
     <:data-cell as |cell|>
       {{#if (eq cell.attribute "label")}}
