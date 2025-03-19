@@ -277,6 +277,7 @@ How to show different things in Ember Data Table
   selectable across pages and may be acted on using the
   `:selection-menu-actions` or `:selection-menu` named blocks.
 - `@initialSelection` :: The selection to use as long as the user has not changed the selection yet.  
+- `@selectionProperty` :: By default equality will be checked by comparison of objects, which works for e.g. ember-data records. If a specific key is needed for comparison (e.g. uuid when using mu-search), this can be specified here by providing the path to the attribute.
 - `@linksModelProperty` :: When a link is clicked the row must supply
   information to the link to indicate which item was clicked.  By
   default the `id` property is used but another attribute may be

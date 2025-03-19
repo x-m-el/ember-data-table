@@ -3,6 +3,7 @@ import { get } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 import Component from '@glimmer/component';
+import { includesBy } from '../../helpers/includes-by';
 
 export default class DataTableContentBodyComponent extends Component {
   @service router;
@@ -24,7 +25,7 @@ export default class DataTableContentBodyComponent extends Component {
     return content.map((item) => {
       return {
         item: item,
-        isSelected: selection.includes(item),
+        isSelected: includesBy(selection, item, this.args.selectionProperty),
         rowLink: this.args.rowLink,
         rowLinkModel: this.rowLinkModel(item)
       };

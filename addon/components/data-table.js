@@ -4,6 +4,7 @@ import Component from '@glimmer/component';
 import { typeOf } from '@ember/utils';
 import { toComponentSpecifications, definitionsToArray } from "../utils/string-specification-helpers";
 import attributeToSortParams from "../utils/attribute-to-sort-params";
+import get from '../utils/get';
 
 const DEFAULT_DEBOUNCE_TIME = 2000;
 export default class DataTable extends Component {
@@ -31,7 +32,7 @@ export default class DataTable extends Component {
   }
 
   set selection(newSelection) {
-    this._selection = newSelection; // also trigers dependent properties
+    this._selection = newSelection; // also triggers dependent properties
   }
 
   get noDataMessage() {
@@ -242,11 +243,13 @@ export default class DataTable extends Component {
 
   @action
   addItemToSelection(item) {
-    this.selection = [...new Set([item, ...this.selection])];
+    this.removeItemFromSelection(item); // in case the item was already selected
+    this.selection = [item, ...this.selection]; // create new array to trigger setter if `selection`
   }
   @action
   removeItemFromSelection(item) {
-    this.selection = this.selection.filter((x) => x !== item);
+    const byPath = this.args.selectionProperty;
+    this.selection = this.selection.filter((x) => get(x, byPath) !== get(item, byPath));
   }
   @action
   clearSelection() {
