@@ -186,7 +186,7 @@ The passing of data from route and controller, and moving data back up.
 
 How to show different things in Ember Data Table
 
-- `@fields` :: List of fields to render with extra options.  The fields are split by spaces.  Splitting a field with a colon (`:`) makes the first element be the attribute and the second be the label.  Use an `_` to render a space in the label. E.g.: `@fields="label:Name priceInEuros:Euro_price"`.
+- `@fields` :: List of fields to render (in given order) with extra options.  The fields are split by spaces.  Splitting a field with a colon (`:`) makes the first element be the attribute and the second be the label.  Use an `_` to render a space in the label. E.g.: `@fields="label:Name priceInEuros:Euro_price"`.
 - `@sortableFields` :: List or space-separated string of fields by which the user may sort.
   Fields should use the attribute names of `@fields`.  By default all fields are sortable.  Set to an empty list or empty string to disable sorting.
 - `@noDataMessage` :: Custom message to show when no data is available.
