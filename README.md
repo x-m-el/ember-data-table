@@ -277,13 +277,13 @@ How to show different things in Ember Data Table
   Ember Data Table (and used in the sort hash to the back-end).  More
   options than `'asc'` and `'desc'` can be provided if the back-end
   understands different sorting strategies.
+- `@rowLink` :: Link to be used when users click on the full row.  This
+  is an easier click target for users than an icon on the side.  Ideally
+  that target is provided too. `@onClickRow` may be provided to
+  call a function instead but this is less accessible.
 - `@onClickRow` :: Action to be triggered when the row is clicked.  This
   is an alternative for the row link but it triggers an action rather
   than following a route.
-- `@rowLink` :: Link to be used when users click on the full row.  This
-  is an easier click target for users than an icon on the side.  Ideally
-  the that target is provided too.  `@onClickRow` may be provided to
-  call a function instead but this is less accessible.
 - `@rowLinkModelProperty` :: When `@rowLink` is used, the `id` property
   of the model rendered in the row will be supplied to the link.  The
   property may be overridden by this property.  Set to `uuid` when using
