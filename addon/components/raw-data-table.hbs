@@ -241,9 +241,17 @@
                                 {{#if row.linkedRoutes}}
                                   <td>
                                     {{#each row.linkedRoutes as |linkedRoute|}}
-                                      <LinkTo @route={{linkedRoute.route}} @model={{linkedRoute.model}}>
-                                        {{or linkedRoute.label linkedRoute.route}}
-                                      </LinkTo>
+                                      {{#if linkedRoute.icon}}
+                                        {{!-- NOTE: Change if icons should be supported, use rawIcon if icon name contain _ --}}
+                                        {{!-- NOTE: keep the label intact for screenreaders --}}
+                                        <LinkTo @route={{linkedRoute.route}} @model={{linkedRoute.model}}>
+                                          {{or linkedRoute.label linkedRoute.route}}
+                                        </LinkTo>
+                                      {{else}}
+                                        <LinkTo @route={{linkedRoute.route}} @model={{linkedRoute.model}}>
+                                          {{or linkedRoute.label linkedRoute.route}}
+                                        </LinkTo>
+                                      {{/if}}
                                     {{/each}}
                                   </td>
                                 {{/if}}
