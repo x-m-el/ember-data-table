@@ -154,7 +154,9 @@ export default class DataTable extends Component {
         hasCustomHeader: hasCustomHeader
           || this.customHeaders.includes(attribute),
         isCustom: isCustom
-          || this.customFields.includes(attribute)
+          || this.customFields.includes(attribute),
+        isCustomComponent: (attribute in this.customFieldComponents),
+        customComponent: this.customFieldComponents[attribute] || null
       }));
   }
 
@@ -164,6 +166,10 @@ export default class DataTable extends Component {
 
   get customFields() {
     return definitionsToArray(this.args.customFields);
+  }
+
+  get customFieldComponents() {
+    return this.args.customFieldComponents || {};
   }
 
   get sortableFields() {

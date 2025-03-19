@@ -28,6 +28,7 @@
   @rowLinkModelProperty={{@rowLinkModelProperty}}
   @customHeaders={{@customHeaders}}
   @customFields={{@customFields}}
+  @customFieldComponents={{@customFieldComponents}}
   @sortableFields={{@sortableFields}}
   @attributeToSortParams={{@attributeToSortParams}}
   as |dt|>
@@ -196,6 +197,10 @@
                                     <dataCells.DataCell @column={{dataCells.firstColumn}} @hasCustomBlock={{has-block "data-cell"}} as |cell|>
                                       {{#if (has-block "first-data-cell")}}
                                         {{yield cell to="first-data-cell"}}
+                                      {{else if dataCells.firstColumn.isCustomComponent}}
+                                        {{#let dataCells.firstColumn.customComponent as |CustomComponent|}}
+                                          <CustomComponent @cell={{cell}}/>
+                                        {{/let}}
                                       {{else if cell.renderCustomBlock}}
                                         {{yield cell to="data-cell"}}
                                       {{else}}
@@ -217,6 +222,10 @@
                                     <dataCells.DataCell @column={{column}} @hasCustomBlock={{has-block "data-cell"}} as |cell|>
                                       {{#if (has-block "rest-data-cell")}}
                                         {{yield cell to="rest-data-cell"}}
+                                      {{else if column.isCustomComponent}}
+                                        {{#let column.customComponent as |CustomComponent|}}
+                                          <CustomComponent @cell={{cell}}/>
+                                        {{/let}}
                                       {{else if cell.renderCustomBlock}}
                                         {{yield cell to="data-cell"}}
                                       {{else}}

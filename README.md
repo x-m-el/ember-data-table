@@ -111,6 +111,15 @@ The `@customFields` property lists which fields which receive custom rendering. 
 
 This configuration renders `label` as usual.  `price` and `available` render through the named slot.  Note that the order of the columns is still the order of `@fields`.
 
+Alternatively the components to use for rendering can be passed directly via `@customFieldComponents`:
+```hbs
+<RawDataTable
+    @content={{@model}}
+    @fields="label available price"
+    @customFieldComponents={{hash available=(component "availability") price=(component "price") }}
+  />
+```
+
 ### Overwrite the header labels
 
 Supply column headers by adding extra properties to the fields attribute, split by a colon.  A single `_` gets replaced by a space and two underscores get replaced by a single underscore
@@ -251,6 +260,8 @@ How to show different things in Ember Data Table
     </:data-cell>
   </RawDataTable>
   ```
+- `@customFieldComponents`: an object (hash) with key the attribute of the field to render via a custom component and
+  value the component to render. The component will receive in `@cell` the same object given to a `:data-cell` block.
 
 #### Ember Data Table functional configuration
 
@@ -371,6 +382,8 @@ Various named blocks are offered, check your Ember Data Table design implementat
         named block)
       - `isCustom` :: whether the field rendering should be custom or not
         (meaning data cells should be rendered through `:data-cell`).
+      - `isCustomComponent` :: Whether the field rendering should use the `customComponent` to render.
+      - `customComponent` :: Available if the field rendering should use this custom component for rendering.
     - `dataHeadersInfo` :: information for the data headers.  Supplied to
       `:data-headers` named block.
     - `ThSortable` :: Contextual component.  When calling this component
