@@ -200,7 +200,7 @@ How to show different things in Ember Data Table
 - `@links` :: Each row may contain a number of links.  Different links
   are split by a space in the configuration.  Each link consists of one
   to three parts split by a colon.  The first part is the route, the
-  second is the label, the third is an icon to use instead of the label
+  second is the label (`_` are rendered as spaces), the third is an icon to use instead of the label
   if supported (screen readers should see the label still).  E.g.:
   `@links="products.edit:edit:pencil products.show:open:file-earmark-richtext"`.  
   Note that only the route is required in which case the label is
