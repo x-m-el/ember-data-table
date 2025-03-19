@@ -1,7 +1,7 @@
 import { upperFirst } from "lodash";
 
 /**
- * Splits a string of defitinions by space.
+ * Splits a string of definitions by space.
  */
 export function splitDefinitions(string) {
   return (string || "")
