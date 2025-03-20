@@ -416,8 +416,8 @@ Various named blocks are offered, check your Ember Data Table design implementat
   - `nextSort` :: Next way of sorting.  This is clear for
     `["asc","desc",""]` but users may have provided other sorting
     methods through `@attributeToSortParams`.
-  - `isAscending` :: Are we sorting ascending now?
-  - `isDescending` :: Are we sorting descending now?
+  - `isAscending` :: Wether the current sorting is ascending (`'asc'`).
+  - `isDescending` :: Wether the current sorting is descending (`'desc'`).
   - `sortDirection` :: What's the key on which we're sorting now (e.g.: `"desc"`)
   - `renderCustomBlock` :: Should a custom block be rendered for this data header?
   - `isCustom` :: Is the header explicitly marked to render custom?
