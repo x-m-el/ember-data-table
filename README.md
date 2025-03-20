@@ -370,7 +370,7 @@ Various named blocks are offered, check your Ember Data Table design implementat
       per the `@links` argument to DataTable).
     - `customHeaders` :: Headers which should be rendered in a custom way
       as an array or strings.
-    - `fields` :: A complex fields object containing the information about
+    - `fields` :: An array of complex fields object containing the information about
       each column to be rendered:
       - `attribute` :: the attribute to be rendered
       - `label` :: the label of the header
