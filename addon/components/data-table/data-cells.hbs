@@ -1,7 +1,7 @@
 {{!-- Used in: data-table/row --}}
 {{yield (hash
-    firstColumn=this.firstColumn
-    otherColumns=this.otherColumns
+    firstColumnField=this.firstColumnField
+    otherColumnFields=this.otherColumnFields
     wrapper=@wrapper
     item=@wrapper.item
     rowLink=@wrapper.rowLink
@@ -9,7 +9,7 @@
     fields=@fields
     DataCell=(component
     "data-table/data-cell"
-      firstColumn=this.firstColumn
-      otherColumns=this.otherColumns
+      firstColumnField=this.firstColumnField
+      otherColumnFields=this.otherColumnFields
       wrapper=@wrapper
       fields=@fields))}}

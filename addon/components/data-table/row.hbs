@@ -1,5 +1,4 @@
 {{!-- Used in: data-table/data-table-content-body --}}
-{{!-- TODO: do we want both selected and isSelected? --}}
 {{yield (hash
     wrapper=@wrapper
     item=@wrapper.item
@@ -9,7 +8,6 @@
     hasClickRowAction=@hasClickRowAction
     onClickRow=(fn @onClickRow @wrapper.item)
     isSelected=(includes-by @selection @wrapper.item @selectionProperty)
-    selected=(includes-by @selection @wrapper.item @selectionProperty)
     toggleSelected=(fn @toggleSelected @wrapper)
     linkedRoutes=this.linkedRoutes
     fields=@fields

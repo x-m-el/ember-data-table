@@ -126,7 +126,7 @@ export default class NumberPaginationComponent extends Component {
     return this.lastPage > this.firstPage;
   }
 
-  get startItem() {
+  get startIndex() {
     // note, you might want to use this.args.page instead, but given
     // that comes from the backend, it's *not* guaranteed to be
     // zero-based either.
@@ -137,7 +137,7 @@ export default class NumberPaginationComponent extends Component {
       return zeroToHumanBased(this.args.size * humanToZeroBased( this.humanPage ));
   }
 
-  get endItem() {
+  get endIndex() {
     // this one is exactly the same number as humanPageOffset yet it has
     // a different meaning.  When summing up lists, it's effectively
     // removing one regardless of the offset.
@@ -145,7 +145,7 @@ export default class NumberPaginationComponent extends Component {
       // human probably expects to see 0-0 when no items exist.
       return 0;
     else
-      return this.startItem - 1 + this.args.itemsOnCurrentPage;
+      return this.startIndex - 1 + this.args.itemsOnCurrentPage;
   }
 
   get numberOfPages() {

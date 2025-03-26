@@ -3,9 +3,9 @@
   @content={{@content}}
   @fields={{@fields}}
   @autoSearch={{@autoSearch}}
-  @view={{@view}}
   @page={{@page}}
   @size={{@size}}
+  @sizes={{@sizes}}
   @total={{@total}}
   @sort={{@sort}}
   @filter={{@filter}}
@@ -46,18 +46,18 @@
                 {{on "submit" search.submitForm}}
                 class="data-table-search">
                 {{#if search.autoSearch}}
-                  <label>Search:
+                  <label>Auto Search:
                     <input
                       value={{search.filter}}
                       placeholder={{search.placeholder}}
-                      {{on "input" search.handleAutoInput}} />
+                      {{on "input" search.handleInput}} />
                   </label>
                 {{else}}
                   <label>Search:
                     <input
                       value={{search.filter}}
                       placeholder={{search.placeholder}}
-                      {{on "input" search.handleDirectInput}} />
+                      {{on "input" search.handleInput}} />
                   </label>
                   <button type="submit">Search</button>
                 {{/if}}
@@ -71,20 +71,20 @@
 
     {{!-- START: menu --}}
     {{#if (not-eq @showMenu false)}}
-      <dt.Menu as |General Selected enableSelection|>
+      <dt.Menu as |menu|>
         {{#if (has-block "menu")}}
-          {{yield (hash General Selected enableSelection) to="menu"}}
+          {{yield menu to="menu"}}
         {{else}}
           <div class="data-table-menu">
             {{!-- either we have a general block or we have to have a menu --}}
-            <General as |general|>
+            <menu.General as |general|>
               {{!-- TODO: shouldn't this be rendered when the result is empty too? Update docs! --}}
               {{#if general.selectionIsEmpty}}
                 {{yield general to="general-menu"}}
               {{/if}}
-            </General>
-            {{#if enableSelection}}
-              <Selected as |selected|>
+            </menu.General>
+            {{#if menu.enableSelection}}
+              <menu.Selected as |selected|>
                 {{#unless selected.selectionIsEmpty}}
                   {{#if (has-block "selection-menu")}}
                     {{yield selected to="selection-menu"}}
@@ -96,7 +96,7 @@
                     {{/if}}
                   {{/if}}
                 {{/unless}}
-              </Selected>
+              </menu.Selected>
             {{/if}}
           </div>
         {{/if}}
@@ -193,13 +193,13 @@
                                 {{#if (has-block "data-cells")}}
                                   {{yield dataCells to="data-cells"}}
                                 {{else}}
-                                  {{!-- NOTE: you may drop this {{#if dataCells.firstColumn}}...{{/if}} when no custom first column styling is needed --}}
-                                  {{#if dataCells.firstColumn}}
-                                    <dataCells.DataCell @column={{dataCells.firstColumn}} @hasCustomBlock={{has-block "data-cell"}} as |cell|>
+                                  {{!-- NOTE: you may drop this {{#if dataCells.firstColumnField}}...{{/if}} when no custom first column styling is needed --}}
+                                  {{#if dataCells.firstColumnField}}
+                                    <dataCells.DataCell @column={{dataCells.firstColumnField}} @hasCustomBlock={{has-block "data-cell"}} as |cell|>
                                       {{#if (has-block "first-data-cell")}}
                                         {{yield cell to="first-data-cell"}}
-                                      {{else if dataCells.firstColumn.isCustomComponent}}
-                                        {{#let dataCells.firstColumn.customComponent as |CustomComponent|}}
+                                      {{else if dataCells.firstColumnField.isCustomComponent}}
+                                        {{#let dataCells.firstColumnField.customComponent as |CustomComponent|}}
                                           <CustomComponent @cell={{cell}}/>
                                         {{/let}}
                                       {{else if cell.renderCustomBlock}}
@@ -218,8 +218,8 @@
                                       {{/if}}
                                     </dataCells.DataCell>
                                   {{/if}}
-                                  {{!-- NOTE: if you dropped custom styling for dataCells.firstColumn then use {{#each dataCells.fields as |column|}}...{{/each}} --}}
-                                  {{#each dataCells.otherColumns as |column|}}
+                                  {{!-- NOTE: if you dropped custom styling for dataCells.firstColumnField then use {{#each dataCells.fields as |column|}}...{{/each}} --}}
+                                  {{#each dataCells.otherColumnFields as |column|}}
                                     <dataCells.DataCell @column={{column}} @hasCustomBlock={{has-block "data-cell"}} as |cell|>
                                       {{#if (has-block "rest-data-cell")}}
                                         {{yield cell to="rest-data-cell"}}
@@ -295,7 +295,7 @@
       {{else}}
         <div class="data-table-pagination">
           <div class="data-table-pagination-left">
-            Displaying {{pagination.startItem}}-{{pagination.endItem}}
+            Displaying {{pagination.startIndex}}-{{pagination.endIndex}}
             {{#if pagination.hasTotal}} of {{pagination.total}}{{/if}}
             {{#if pagination.sizeOptions}}
               |

@@ -168,60 +168,61 @@ These arguments should be supported by specific design implementations too.
 
 The passing of data from route and controller, and moving data back up.
 
-- `@content` :: Data to be rendered.  In case this has a `meta`
+- `@content` :: Data (an array of items) to be rendered.  In case this has a `meta`
   property, this is used as default to derive amount of results and
   back-end pagination offset.
-- `@page` and `@updatePage` :: Indicates the current page number and the
+- `@page` and `@updatePage` :: Set the current page number and the
   function called to update the current page.
-- `@size` and `@updatePageSize` :: Indicates the current page size and
+- `@size` and `@updatePageSize` :: Set the current page size and
   the function called to update the current page size.
-- `@sort` and `@updateSort` :: Returns current sorting for data table
-  and a function to update the sorting.
-- `@filter` and `@updateFilter` :: Supplies the user filter string and
-  the function to call for updating that string.
+- `@sort` and `@updateSort` :: Set the current sorting for data table
+  and the function called to update the sorting.
+- `@filter` and `@updateFilter` :: Set the user search string and
+  the function called to update that string.
 - `@total` :: The total amount of results across all pages.  If not set,
   `@meta.count` or `@content.meta.count` is tried.
-- `@isLoading` :: Truthy if the Data Table is currently loading data.
+- `@isLoading` :: Whether to show the Data Table in its loading state.
 
 - `@meta` :: Meta may be provided in `@content.meta` or it may be
-  provided in a separate property.  If supplied, it may be used to
+  provided in this property.  If supplied, it may be used to
   determine the back-end pagination offset from
   `@meta.links.first.number` (often `0` but sometimes `1`), pagination in
   `@meta.pagination` and
-  amount of results as alternative to `@total` from `@meta.count`.
+  amount of results from `@meta.count` as an alternative to `@total`.
 
 
 #### Ember Data Table visualization configuration
 
 How to show different things in Ember Data Table
 
-- `@fields` :: List of fields to render (in given order) with extra options.  The fields are split by spaces.  Splitting a field with a colon (`:`) makes the first element be the attribute and the second be the label.  Use an `_` to render a space in the label. E.g.: `@fields="label:Name priceInEuros:Euro_price"`.
-- `@sortableFields` :: List or space-separated string of fields by which the user may sort.
+- `@fields` :: Space-separated string of fields to render (in given order) with extra options.  Splitting a field with a colon (`:`) makes the first element be the attribute and the second be the label.  Use an `_` to render a space in the label. E.g.: `@fields="label:Name priceInEuros:Euro_price"`.
+- `@sortableFields` :: Array or space-separated string of fields by which the user may sort.
   Fields should use the attribute names of `@fields`.  By default all fields are sortable.  Set to an empty list or empty string to disable sorting.
 - `@noDataMessage` :: Custom message to show when no data is available.
   The `:no-data-message` block can be used as an alternative to provide
   styling.
 - `@enableSearch` :: Set to false to disable search in the table.
+- `@searchPlaceholder` :: Custom placeholder text for the search input box. Defaults to 'Search input'.
 - `@enableLineNumbers` :: Set to truthy to show line numbers in the
   table.
-- `@links` :: Each row may contain a number of links.  Different links
-  are split by a space in the configuration.  Each link consists of one
+- `@sizes` :: Array or space-separated string of page size choices that should be shown in the pagination block.  Defaults to `[5, 10, 25, 50, 100]`.  Set to an empty list or empty string to hide.
+- `@links` :: A space-separated string of links with extra options.  
+  Each row may contain a number of links.  Each link consists of one
   to three parts split by a colon.  The first part is the route, the
   second is the label (`_` are rendered as spaces), the third is an icon to use instead of the label
   if supported (screen readers should see the label still).  E.g.:
   `@links="products.edit:edit:pencil products.show:open:file-earmark-richtext"`.  
   Note that only the route is required in which case the label is
-  derived and no icon is shown.  The link by default receives the `id`
-  of the item but this is configurable using the `@linksModelProperty`
+  derived and no icon is shown.  By default the link receives the `id`
+  of the item, but is configurable using the `@linksModelProperty`
   attribute (see below).
-- `@customHeaders` :: List or space-separated string of attributes 
+- `@customHeaders` :: Array or space-separated string of attributes 
   for which a custom header will
   be rendered through the `:data-header` named block.  Each of the
   attributes mentioned here won't render the default header but will
   instead dispatch to the named block.  Check which attribute is being
-  rendered in the named block to render the right label.  Verify in the
-  implementation you override which actions are set on the columns how
-  to support sorting if needed.
+  rendered in the named block to render the right label.  Check in the
+  implementation you override how sorting is supported, if sorting is needed for this header.
   
   ```hbs
   <RawDataTable
@@ -239,7 +240,7 @@ How to show different things in Ember Data Table
   </RawDataTable>
   ```
 
-- `@customFields` :: List or space-separated string of attributes for which the fields will
+- `@customFields` :: Array or space-separated string of attributes for which the fields will
   receive a custom rendering.  This will render the individual cell
   values based on the `:data-cell` custom block.  You may use the
   attribute name to verify which attribute the custom block is rendering
@@ -260,15 +261,15 @@ How to show different things in Ember Data Table
     </:data-cell>
   </RawDataTable>
   ```
-- `@customFieldComponents`: an object (hash) with key the attribute of the field to render via a custom component and
-  value the component to render. The component will receive in `@cell` the same object given to a `:data-cell` block.
+- `@customFieldComponents`: An object (hash) with key the attribute of the field and
+  value the component to use for rendering.  The component will receive in `@cell` the same hash given to a `:data-cell` block (see below).
 
 #### Ember Data Table functional configuration
 
 - `@autoSearch` :: If truthy, search is automatically triggered
   without explicitly pressing search.  If a number is provided, this is
   the time in milliseconds to wait for input before sending the request (input douncing).  
-  If no number is supplied a default is used.
+  If no number is supplied a default of 2000ms is used.
 - `@showMenu` :: If false, the component will hide the supplied
   menu.  This allows controlling whether the menu should be shown
   dynamically.  The menu may contain actions which act on the current
@@ -277,24 +278,23 @@ How to show different things in Ember Data Table
   selectable across pages and may be acted on using the
   `:selection-menu-actions` or `:selection-menu` named blocks.
 - `@initialSelection` :: The selection to use as long as the user has not changed the selection yet.  
-- `@selectionProperty` :: By default equality will be checked by comparison of objects, which works for e.g. ember-data records. If a specific key is needed for comparison (e.g. uuid when using mu-search), this can be specified here by providing the path to the attribute.
+- `@selectionProperty` :: By default equality will be checked by direct comparison of objects, which works for e.g. ember-data records. If a specific property should be used for comparison (e.g. `uuid` when using mu-search), a property name or path can be supplied.
 - `@linksModelProperty` :: When a link is clicked the row must supply
   information to the link to indicate which item was clicked.  By
-  default the `id` property is used but another attribute may be
+  default the `id` property is used, but another property name or path may be
   supplied if desired (such as `uuid` when using mu-search).  An empty
   string will provide the full object.
-- `@attributeToSortParams` :: Function which translates an attribute to
-  its sort parameters.  The sort parameters is currently a hash which
-  contains a key (default `'asc'` and `'desc'` to indicate sorting up
-  and down) and the corresponding sort key which should be sent out of
-  Ember Data Table (and used in the sort hash to the back-end).  More
-  options than `'asc'` and `'desc'` can be provided if the back-end
-  understands different sorting strategies.
+- `@attributeToSortParams` :: Function which translates an attribute name to
+  its sort parameters.  The sort parameters are a hash
+  with key the sort name to use in the table and value the corresponding sort key to sent out of Ember Data Table (and used in the sort hash to the back-end via `updateSort`).  
+  By default, for input `attributeName`, it returns `{ 'asc': 'attribute-name', 'desc': '-attribute-name'}`.  
+  More options can be provided if the back-end understands different sorting strategies.
 - `@rowLink` :: Link to be used when users click on the full row.  This
   is an easier click target for users than an icon on the side.  Ideally
-  that target is provided too. `@onClickRow` may be provided to
+  that target is provided too.  `@onClickRow` may be provided to
   call a function instead but this is less accessible.
-- `@onClickRow` :: Action to be triggered when the row is clicked.  This
+- `@onClickRow` :: Callback to be triggered when the row is clicked.  
+  Receives the clicked item (from `@content`) as its first argument.  This
   is an alternative for the row link but it triggers an action rather
   than following a route.
 - `@rowLinkModelProperty` :: When `@rowLink` is used, the `id` property
@@ -305,39 +305,40 @@ How to show different things in Ember Data Table
 
 #### Overriding Ember Data Table parts using named blocks
 
-Various named blocks are offered, check your Ember Data Table design implementation to see which part needs to be overridden.  A list is provided here for reference.
+Various named blocks are offered, check your Ember Data Table design implementation to see which part needs to be overridden.  A list is provided here for reference as used in `raw-data-table.hbs`.
 
-- `search` :: Overrides the full search component.  Receives a search hash with properties:
-  - `filter` :: User's filter
-  - `placeholder` :: Placeholder for the text search
-  - `autoSearch` :: Value for autoSearch as supplied by the user
-    (subject to change)
-  - `submitForm` :: Action which can be used to submit the search form
-    and trigger search update
-  - `handleAutoInput` :: Action which can handle auto input by
-    debouncing and updating the search string
-  - `handleDirectInput` :: Action which handles the event where a user
-    types, gets value from `event.target.value`.
+- `:search` :: Overrides the full search block.  Receives a hash containing:
+  - `filter` :: User's filter string
+  - `placeholder` :: Placeholder for the text search input
+  - `autoSearch` :: Value for autoSearch as supplied by the user (boolean or number).
+  - `submitSearch` :: Action which can be used to trigger a search string update (`@updateFilter`)
+  - `handleInput` :: Action which expects and event (with value in `event.target.value`)
+  and updates the search string immediately or after a debounce time, depending on `@autoSearch` value.
+  - `handleAutoInput` :: Like `handleInput`, but always uses a debounce time (even if `@autoSearch` is falsy).
+  - `handleDirectInput` :: Like `handleInput`, but always updates immediately (ignoring `@autoSearch` value).
+  
 
-- `menu` :: Overrides the full menu rendering.  Receives three positional arguments:
+- `:menu` :: Overrides the full menu block.  Receives a hash containing:
   - `General` :: Component with information about the General menu which
     is rendered when nothing is selected.  The block given to General
-    receives an argument which should be passed to `:general-menu`.
+    receives one block parameter which should be passed to `:general-menu`. 
+    See `:general-menu` for the parameter details of `General`. 
   - `Selected` :: Component with information on handling selected items.
-    The block given to Selected receives `selected` which should be
-    passed to `:selection-menu`.
+    The block given to Selected receives one block parameter which should be
+    passed to `:selection-menu`.  
+    See `:selection-menu` for the parameter details of `Selected`.
+  - `enableSelection` :: Whether selection is enabled.
 
-- `general-menu` :: Implements the menu with actions which is shown when
-  no items are selected.  Receives a hash with two items:
+- `:general-menu` :: Implements the menu with actions which is shown when
+  no items are selected.  Receives a hash containing:
   - `dataTable` :: The main DataTable object on which actions can be
     called.
   - `selectionIsEmpty` :: Whether items are currently selected or not.
 
-- `selection-menu` :: This menu is rendered only when items have been
+- `:selection-menu` :: This menu is rendered only when items have been
   selected.  It's the main wrapper which contains
   `:selection-menu-actions` (which you'd likely want to override
-  instead) as well as some visual information on the selected items.  It
-  receives a hash with four elements:
+  instead) as well as some visual information on the selected items.  Receives a hash containing:
   - `selectionIsEmpty` :: Whether the selection is currently empty.
   - `selectionCount` :: The amount of items which are selected at this point.
   - `clearSelection` :: An action to clear the whole selection.
@@ -349,37 +350,35 @@ Various named blocks are offered, check your Ember Data Table design implementat
   Table (versus the template).  Receives the same argument as
   `:selection-menu`.
 
-- `content` :: This block is the full table but without search, actions
-  or pagination.  It must render the table tag and everything in it.  It
-  receives a hash with three elements.
+- `:content` :: This block is the full table but without search, menu actions
+  or pagination.  It must render the table tag and everything in it.  
+  Receives a hash containing:
   - `Header` :: The Header logical component which contains information
-    to render the header row.  Supplying a block to Header will yield
-    with the content for the `:header` named block.
+    to render the header row.  Has the same block parameter hash as `:full-header` below.
   - `Body` :: The Body logical component which contains information to
-    render each of the body rows.  Supplying a block to Body will yield
-    with the content for the `:body` named block.
+    render each of the body rows.  Has the same  block parameter hash as `:body` below.
   - `dataTable` :: The DataTable object.
 
-- `full-header` :: This block should render the `<thead>` with the header row
-  inside of it.  Receives a hash with the following items:
-    - `enableSelection` :: Whether or not selection is enabled.
-    - `enableLineNumbers` :: Whether or not line numbers are enabled.
-    - `sort` :: Sort parameter.
-    - `updateSort` :: Function to update sorting.
+- `:full-header` :: This block should render the `<thead>` with the header row
+  inside of it.  Receives a hash containing:
+    - `enableSelection` :: Whether selection is enabled.
+    - `enableLineNumbers` :: Whether line numbers are enabled.
+    - `sort` :: Current sort parameter.
+    - `updateSort` :: Function to update sorting (see `@updateSort`).
     - `hasLinks` :: Whether custom links are provided for this table (as
       per the `@links` argument to DataTable).
     - `customHeaders` :: Headers which should be rendered in a custom way
-      as an array or strings.
+      as an array of strings.
     - `fields` :: An array of complex fields object containing the information about
-      each column to be rendered:
+      each data column to be rendered:
       - `attribute` :: the attribute to be rendered
       - `label` :: the label of the header
       - `isSortable` :: whether this column is sortable or not
       - `sortParameters` :: hash which indicates in which ways this field
-        can be sorted (ascending, descending, something else).  See
+        can be sorted (ascending, descending, something else).  See output of
         `@attributeToSortParams`.
       - `hasCustomHeader` :: whether this column has a custom header or
-        not (meaning we should render it through the `:data-header`
+        not (meaning it should be rendered through the `:data-header`
         named block)
       - `isCustom` :: whether the field rendering should be custom or not
         (meaning data cells should be rendered through `:data-cell`).
@@ -388,68 +387,64 @@ Various named blocks are offered, check your Ember Data Table design implementat
     - `dataHeadersInfo` :: information for the data headers.  Supplied to
       `:data-headers` named block.
     - `ThSortable` :: Contextual component.  When calling this component
-      `@field` must be supplied (to generate info for a given field when
+      `@field` must be supplied (to generate info for the specific field when
       looping over `header.fields`) and `@hasCustomBlock` which should
-      indicate whether a `:data-header` is given.  Supplying a block to
-      ThSortable will yield with the content for the `:data-header`
-      named block.  The aforementioned content also has a
+      indicate whether a `:data-header` block is given.  Has the same block parameter hash as `:data-header` below.  This block parameter contains
       `renderCustomBlock` which can be used to detect whether a custom
       block should be rendered for this block or not.
-- `data-headers` :: This is inside the `<tr>` of the `<thead>` and
+- `:data-headers` :: This is inside the `<tr>` of the `<thead>` and
   should render all headers for the attributes.  Thus ignoring the
-  headers for selection, numbers and actions.  It receives a hash
-  containing the following elements:
-  - `fields` :: The fields to be rendered (see `fields` above for all
-    the attributes).
+  headers for selection, numbers and actions.  Receives a hash
+  containing:
+  - `fields` :: The fields to be rendered (same `fields` as `:full-header`).
   - `customHeaders` :: Headers which should be rendered in a custom way
-    as an array or strings.
+    as an array of strings.
   - `sort` :: Sort parameter.
-  - `updateSort` :: Function to update sorting.
-- `data-header` :: Renders a custom header which should handle sorting
-  etc.  Receives a hash with the following elements:
+  - `updateSort` :: Function to update sorting (see `@updateSort`).
+- `:data-header` :: Renders a custom header for headers specified in `@customHeaders`, which should handle sorting etc.  Receives a hash containing:
   - `label` :: Label of the header.
   - `attribute` :: Attribute which will be rendered in this column.
   - `isSortable` :: Whether this column is sortable or not.
   - `isSorted` :: Whether sorting is applied to this header or not.
   - `toggleSort` :: Action which switches to the next sorting method
-    (e.g.: from `'asc'` to `'desc'` or from `'desc'` to nothing).
+    (e.g.: from `'asc'` to `'desc'` or from `'desc'` to nothing by default).
   - `nextSort` :: Next way of sorting.  This is clear for
-    `["asc","desc",""]` but users may have provided other sorting
-    methods through `@attributeToSortParams`.
-  - `isAscending` :: Wether the current sorting is ascending (`'asc'`).
-  - `isDescending` :: Wether the current sorting is descending (`'desc'`).
-  - `sortDirection` :: What's the key on which we're sorting now (e.g.: `"desc"`)
-  - `renderCustomBlock` :: Should a custom block be rendered for this data header?
-  - `isCustom` :: Is the header explicitly marked to render custom?
-  - `hasCustomHeaders` :: Are there any custom headers to be rendered?
+    `['asc','desc','']` but users may have provided other sorting
+    methods through `@attributeToSortParams`.  The order is always alphabetically.
+  - `isAscending` :: Whether the current sorting is ascending (`'asc'`).
+  - `isDescending` :: Whether the current sorting is descending (`'desc'`).
+  - `sortDirection` :: What's the key on which we're sorting now (e.g.: `'desc'`)
+  - `renderCustomBlock` :: Whether a custom block should be rendered for this data header.
+  - `isCustom` :: Truthy if the header is explicitly marked to render custom.
+  - `hasCustomHeaders` :: Truthy if there are any custom headers to be rendered.
 
-- `actions-header` :: Header which will contain all actions.  Receives no arguments.
+- `:actions-header` :: Header which will contain all actions.  Receives no arguments.
 
-- `body` :: Renders the full body of the table, including the `<tbody>`
+- `:body` :: This block renders the full body of the table, and should include the `<tbody>`
   tag.  Receives a hash containing:
-  - `isLoading` :: Is the data being loaded at this point?  Probably
-    need to render `:body-loading` named block then.
-  - `content` :: The actual content of this Data Table.
-  - `offset` :: The index of the first element in this data table.
+  - `isLoading` :: Whether the data is being loaded.
+    Need to render `:body-loading` named block then.
+  - `content` :: The actual content of this Data Table (all items).
+  - `offset` :: The absolute index of the first element of the current page.
   - `wrappedItems` :: Rows of the data table in a way through which they
     can be selected.
   - `enableLineNumbers` :: Whether line numbers are enabled or not.
   - `hasClickRowAction` :: Whether something needs to happen when the row
     is clicked.  Either because there is an `@onClickRow` or because
     there is a `@rowLink`.
-  - `onClickRow` :: Action to be called when user clicked on a row, if
-    supplied by user of this Data Table.
+  - `onClickRow` :: Function to be called when user clicked on a row, if
+    supplied by user of this Data Table. Should pass the clicked item.
   - `toggleSelected` :: Action which allows to toggle the selection
-    state of the current row.  Should receive the an element from
+    state of the current row.  Should receive the element from
     `wrappedItems` as first element and the event that caused it (will
-    check `event.target.fetched`) as second argument.
+    check `event.target.checked`) as second argument.
   - `selection` :: Currently selected items.
   - `enableSelection` :: Whether selection of items is enabled.
   - `linkedRoutes` :: Array of objects describing each of the routes
     which should be linked as custom links per row.  Each item is a hash
     with the following elements:
     - `route` :: The route to which we should link.
-    - `label` :: The human-readable label for the route if supplied.
+    - `label` :: The human-readable label for the route, if supplied.
     - `icon` :: The icon which should be rendered for the link, if supplied.
     - `linksModelProperty` :: The property of the model which should be
       supplied to the route (e.g.: `id` for the id or `""` if the whole
@@ -471,82 +466,73 @@ Various named blocks are offered, check your Ember Data Table design implementat
     regardless of the page, so you can use `{{#each body.wrappedItems as
     |wrapper index|}}<body.Row @wrapper={{wrapper}}
     @index={{index}}>...</body.Row>{{/each}}`.
-- `body-loading` :: Renders a custom body loading message supplied in
-  this invocation of Ember Data Table.
-- `row` :: Renders an individual row, including the `<tr>` tag.  This is
-  the row with both the data elements as well as with the meta elements
-  such as selection of items and links.  Receives a hash with the
-  following elements:
+- `:body-loading` :: Block to show a custom loading message block.
+- `:row` :: Renders an individual row, including the `<tr>` tag.  This is
+  the row with both the data columns as well as the meta columns
+  such as selection of items and links.  Receives a hash containing:
   - `wrapper` :: An object containing the item and the selection status.
   - `item` :: Actual item to be rendered in this row.
   - `enableLineNumbers` :: See above.
   - `lineNumber` :: See above.
   - `enableSelection` :: See above.
-  - `selected` :: Whether this row is selected or not.
-  - `isSelected` :: Whether this item is selected or not (same as
-    selected).
+  - `isSelected` :: Whether this item is selected or not.
   - `toggleSelected` :: See above.
   - `hasClickRowAction` :: See above.
-  - `onClickRow` :: See above.
+  - `onClickRow` :: See above, but already has the row item passed.
   - `linkedRoutes` :: A copy of `linkedRoutes` as mentioned above but
     adding the `model` key which contains the specific model to supply
     to the linked route for this row (e.g.: the `id`, `uuid` or the full
     `item`)
   - `fields` :: See above.
   - `DataCells` :: Contextual component which provides information for
-    rendering the data cells of a row.  Supplying a block to DataCells
-    will yield a block which is used for rendering the `:dataCells` named
-    block.
-- `data-cells` :: Renders all the cells containing real data in a row.
-  This includes selection of the row and links.  Receives a hash with
-  the following elements:
-  - `fields` :: See above.
-  - `firstColumn` :: The field of the first column to be rendered.  Good
+    rendering the data cells of a row.  Has the same block parameter hash as `:data-cells` below.
+- `:data-cells` :: Renders all the cells containing real data (fields) in a row.
+  This excludes cells for meta columns (like selection and links).  Receives a hash containing:
+  - `fields` :: All fields to be rendered. See above.
+  - `firstColumnField` :: The field of the first column to be rendered.  Good
     for designs where the first column should receive different styling.
-  - `otherColumns` :: The fields of all columns but the first one to be
+  - `otherColumnFields` :: The fields of all columns but the first one to be
     rendered.  Good for designs where the first column should receive
     different styling.
   - `wrapper` :: See above.
   - `item` :: See above.
   - `rowLink` :: See above.
   - `rowLinkModel` :: Model to supply to the route specified by `rowLink` for this specific row. # =@wrapper.rowLinkModel
-  - `fields` :: See above.
   - `DataCell` :: Contextual component which provides information for
     rendering an individual cell.  Should receive `@column` with the
     field to render and `@hasCustomBlock` with `{{has-block
     "data-cell"}}` so we know whether a custom block was provided for
     the `data-cell` named slot.
-- `data-cell` :: Renders a custom data cell regardless of whether it's
-  first or any other.  Receives a hash with the following elements:
-  - `firstColumn` :: See above.
-  - `otherColumns` :: See above.
+- `:data-cell` :: Renders a custom data cell regardless of whether it's
+  first or any other.  Receives a hash containing:
+  - `fields` :: See above.
+  - `firstColumnField` :: See above.
+  - `otherColumnFields` :: See above.
   - `item` :: See above.
   - `rowLink` :: See above.
   - `rowLinkModel` :: See above.
   - `label` :: See above.
-  - `fields` :: See above.
-  - `isCustom` :: Is the cell explicitly marked to render custom?
-  - `hasCustomFields` :: Whether there are custom fields to be
-    rendered.
+  - `isCustom` :: Wether this cell is explicitly marked to render custom.
+  - `hasCustomFields` :: Whether there are any cells that are marked to render custom.
   - `attribute` :: The attribute which will be rendered.
   - `renderCustomBlock` :: Whether a custom block should be rendered
-    for this field.  This is the named slot `:data-cell`.
-  - `value` :: The value which should be rendered.
-- `first-data-cell` :: In designs which care about the first data cell
+    for this field.  This block is the named slot `:data-cell`.
+  - `value` :: The data value which should be rendered.
+- `:first-data-cell` :: In designs which care about the first data cell
   versus the others, this will render a custom design for the first data
-  column of the table.  Receives the same arguments as `data-cell`.
-- `rest-data-cell` :: In designs which care about the first data cell
+  column of the table.  Receives the same block parameter hash as `:data-cell`.
+- `:rest-data-cell` :: In designs which care about the first data cell
   versus the others, this will render a custom design for the other data
-  columns of the table.  Receives the same arguments as `data-cell`.
-- `actions` :: Renders the links next to each row specified through
-  `@links`.  Receives the same arguments as `row`.
-- `no-data-message` :: Rendered when no data was available in the data
+  columns of the table.  Receives the block parameter hash as `:data-cell`.
+- `:actions` :: Renders the links next to each row specified through
+  `@links`.  Receives the same arguments as `:row`.
+- `:no-data-message` :: Rendered when no data was available in the data
   cell.  When no styling is needed, `@noDataMessage` can be used
   instead.
-- `pagination` :: Renders everything needed to handle pagination.
-  Receives a hash with the following elements:
-  - `startItem` :: Number of the first item rendered on this page.
-  - `endItem` :: Number of the last item rendered on this page.
+- `:pagination` :: This block contains everything needed to handle pagination.
+  Receives a hash containing:
+  - `startIndex` :: Absolute index of the first item rendered on this page.
+  - `endIndex` :: Absolute index of the last item rendered on this page.
   - `total` :: Total amount of items on all pages of this table.
   - `hasTotal` :: Whether the total amount of items is known.
   - `pageSize` :: Amount of items per page (though the last page may have fewer items).
@@ -563,7 +549,7 @@ Various named blocks are offered, check your Ember Data Table design implementat
     - followed by up to three pages after the current page number,
     - followed by 'more' if empty spots follow,
     - followed by the last page number.
-  - `sizeOptions` :: The different sizes (as an array) for pages of this Data Table.
+  - `sizeOptions` :: The different sizes (as an array of numbers) for pages of this Data Table.  `null` if size should not be changeable (defined by `@sizes`).
   - `firstPage` :: The first page number in this Data Table.
   - `lastPage` :: The last page number in this Data Table.
   - `nextPage` :: The next page number in this view, `undefined` if this
@@ -571,11 +557,11 @@ Various named blocks are offered, check your Ember Data Table design implementat
   - `previousPage` :: The previous page number in this view, `undefined`
     if this is the first page.
   - `updatePage` :: Function which takes a back-end page number and
-    updates it (this is the raw function supplied to `DataTable`.
-  - `humanPage` :: Thu current page in human form.
-  - `updateHumanPage` :: Updates the human page number (this will call
+    updates it (this is the raw function supplied to `DataTable`).
+  - `humanPage` :: The current page in human form.
+  - `updateHumanPage` :: Updates the human page number.  This will call
     `updatePage` after mapping the human page number through the back-end
-    page number offset).
+    page number offset.  All page numbers defined here are human page numbers.
   - `selectSizeOption` :: Selects a new size option, takes `event` as
     input and gets the new value from `event.target.value`.
   - `setSizeOption` :: Selects a new size, takes the `size` as either

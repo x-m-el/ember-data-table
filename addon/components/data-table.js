@@ -1,5 +1,6 @@
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
+import { isEmpty } from '@ember/utils';
 import Component from '@glimmer/component';
 import { typeOf } from '@ember/utils';
 import { toComponentSpecifications, definitionsToArray } from "../utils/string-specification-helpers";
@@ -11,15 +12,11 @@ export default class DataTable extends Component {
   @tracked _selection = undefined;
 
   get filter() {
-    return this.args.filter !== undefined
-      ? this.args.filter
-      : this.args.view?.filter;
+    return this.args.filter;
   }
 
   get sort() {
-    return this.args.sort !== undefined
-      ? this.args.sort
-      : this.args.view?.sort;
+    return this.args.sort;
   }
 
   get selection() {
@@ -42,9 +39,7 @@ export default class DataTable extends Component {
   }
 
   get isLoading() {
-    return this.args.isLoading !== undefined
-      ? this.args.isLoading
-      : this.args.view?.isLoading;
+    return this.args.isLoading;
   }
 
   /**
@@ -67,31 +62,24 @@ export default class DataTable extends Component {
     return this.selection.length === 0;
   }
 
-  get enableSizes() {
-    return this.args.enableSizes === undefined ? true : this.args.enableSizes;
-  }
-
   get page() {
-    const page = this.args.page !== undefined
-          ? this.args.page
-          : this.args.view?.page;
-    return page || 0;
+    return this.args.page || 0;
   }
 
   get size() {
-    if ( this.args.size )
-      return this.args.size;
-    else if ( this.args.view?.size )
-      return this.args.view.size;
-    else
-      return 5;
+    return this.args.size || 5;
   }
 
   get sizeOptions() {
-    if (!this.enableSizes) {
+    const sizeOptions =
+      this.args.sizes === undefined
+        ? [5, 10, 25, 50, 100]
+        : definitionsToArray(this.args.sizes).map((nrOrStr) =>
+            parseInt(nrOrStr)
+          );
+    if (isEmpty(sizeOptions)) {
       return null;
     } else {
-      const sizeOptions = this.args.sizes || [5, 10, 25, 50, 100];
       if (!sizeOptions.includes(this.size) && this.size) {
         sizeOptions.push(this.size);
       }
@@ -190,10 +178,7 @@ export default class DataTable extends Component {
 
   @action
   updatePageSize(size) {
-    const updater = this.args.updatePageSize !== undefined
-          ? this.args.updatePageSize
-          : this.args.view?.updatePageSize;
-
+    const updater = this.args.updatePageSize;
     if( !updater ) {
       console.error(`Could not update page size to ${size} because @updatePageSize was not supplied to data table`);
     } else {
@@ -204,7 +189,7 @@ export default class DataTable extends Component {
 
   @action
   updateFilter(filter) {
-    const updater = this.args.updateFilter || this.args.view?.updateFilter;
+    const updater = this.args.updateFilter;
 
     if( !updater ) {
       console.error(`Could not update filter to '${filter}' because @updateFilter was not supplied to data table`);
@@ -216,10 +201,7 @@ export default class DataTable extends Component {
 
   @action
   updateSort(sort) {
-    const updater = this.args.updateSort !== undefined
-          ? this.args.updateSort
-          : this.args.view?.updateSort;
-
+    const updater = this.args.updateSort;
     if( !updater ) {
       console.error(`Could not update sorting to '${sort}' because @updateSort was not supplied to data table`);
     } else {
@@ -230,10 +212,7 @@ export default class DataTable extends Component {
 
   @action
   updatePage(page) {
-    const updater = this.args.updatePage !== undefined
-          ? this.args.updatePage
-          : this.args.view?.updatePage;
-
+    const updater = this.args.updatePage;
     if( !updater ) {
       console.error(`Could not update page to ${page} because @updatePage was not supplied to data table`);
     } else {

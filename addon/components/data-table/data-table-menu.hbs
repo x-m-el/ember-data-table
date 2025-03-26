@@ -3,5 +3,7 @@
      (component "data-table/data-table-menu-general" dataTable=@dataTable)
      (component "data-table/data-table-menu-selected" dataTable=@dataTable)
      as |general selected|}}
-  {{yield general selected @dataTable.enableSelection}}
+  {{yield
+    (hash General=general Selected=selected enableSelection=@dataTable.enableSelection)
+  }}
 {{/let}}
