@@ -2,14 +2,17 @@
 {{yield (hash
     firstColumnField=this.firstColumnField
     otherColumnFields=this.otherColumnFields
-    wrapper=@wrapper
-    item=@wrapper.item
-    rowLink=@wrapper.rowLink
-    rowLinkModel=@wrapper.rowLinkModel
+    item=@item
+    rowLink=@rowLink
+    rowLinkModel=@rowLinkModel
+    rowClicked=@rowClicked
     fields=@fields
     DataCell=(component
     "data-table/data-cell"
       firstColumnField=this.firstColumnField
       otherColumnFields=this.otherColumnFields
-      wrapper=@wrapper
+      item=@item
+      rowLink=@rowLink
+      rowLinkModel=@rowLinkModel
+      rowClicked=@rowClicked
       fields=@fields))}}

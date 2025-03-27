@@ -173,14 +173,14 @@
                     {{/if}}
                   {{else}}
                     {{#if body.content}}
-                      {{#each body.wrappedItems as |wrapper index|}}
-                        <body.Row @wrapper={{wrapper}} @index={{index}} as |row|>
+                      {{#each body.content as |item index|}}
+                        <body.Row @item={{item}} @index={{index}} as |row|>
                           {{#if (has-block "row")}}
                             {{yield row to="row"}}
                           {{else}}
                             <tr role={{if row.hasClickRowAction "button" "row"}}
                               class="{{if row.isSelected "selected"}} {{if row.hasClickRowAction "clickable"}}"
-                              {{on "click" row.onClickRow}}>
+                              {{on "click" row.rowClicked}}>
                               {{#if row.enableSelection}}
                                 <td class="center">
                                   {{input type="checkbox" checked=row.isSelected click=row.toggleSelected}}

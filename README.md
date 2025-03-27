@@ -426,17 +426,13 @@ Various named blocks are offered, check your Ember Data Table design implementat
     Need to render `:body-loading` named block then.
   - `content` :: The actual content of this Data Table (all items).
   - `offset` :: The absolute index of the first element of the current page.
-  - `wrappedItems` :: Rows of the data table in a way through which they
-    can be selected.
   - `enableLineNumbers` :: Whether line numbers are enabled or not.
   - `hasClickRowAction` :: Whether something needs to happen when the row
     is clicked.  Either because there is an `@onClickRow` or because
     there is a `@rowLink`.
-  - `onClickRow` :: Function to be called when user clicked on a row, if
-    supplied by user of this Data Table. Should pass the clicked item.
   - `toggleSelected` :: Action which allows to toggle the selection
-    state of the current row.  Should receive the element from
-    `wrappedItems` as first element and the event that caused it (will
+    state of the current row.  Should receive the item to toggle from
+    `content` as first element and the event that caused it (will
     check `event.target.checked`) as second argument.
   - `selection` :: Currently selected items.
   - `enableSelection` :: Whether selection of items is enabled.
@@ -460,29 +456,29 @@ Various named blocks are offered, check your Ember Data Table design implementat
     rendered.  See `fields` higher up.
   - `Row` :: Contextual component handling the logic of an individual
     row.  This has to be called for each row in the visible table and it
-    should receive `@wrapper` for the element of `wrappedItems` we're
-    rendering here, as well as the `@index` for the index we're looping
-    over here.  The `@index` is a local index for this rendering
-    regardless of the page, so you can use `{{#each body.wrappedItems as
-    |wrapper index|}}<body.Row @wrapper={{wrapper}}
-    @index={{index}}>...</body.Row>{{/each}}`.
+    should receive in `@item` the element of `content` we're
+    rendering here, as well as the index we're looping
+    over here in `@index`.  The `@index` is a local index for this rendering
+    regardless of the page, so you can use `{{#each body.content as
+    |item index|}}<body.Row @item={{item}} @index={{index}}>...</body.Row>{{/each}}`.
 - `:body-loading` :: Block to show a custom loading message block.
 - `:row` :: Renders an individual row, including the `<tr>` tag.  This is
   the row with both the data columns as well as the meta columns
   such as selection of items and links.  Receives a hash containing:
-  - `wrapper` :: An object containing the item and the selection status.
   - `item` :: Actual item to be rendered in this row.
   - `enableLineNumbers` :: See above.
   - `lineNumber` :: See above.
   - `enableSelection` :: See above.
   - `isSelected` :: Whether this item is selected or not.
-  - `toggleSelected` :: See above.
+  - `toggleSelected` :: See above, but the row item is already passed.
   - `hasClickRowAction` :: See above.
-  - `onClickRow` :: See above, but already has the row item passed.
+  - `rowClicked` :: Function to be called when user clicked on this row.
   - `linkedRoutes` :: A copy of `linkedRoutes` as mentioned above but
     adding the `model` key which contains the specific model to supply
     to the linked route for this row (e.g.: the `id`, `uuid` or the full
     `item`)
+  - `rowLink` :: The route which should be used when users click on the row itself.
+  - `rowLinkModel` :: Model to supply to the route specified by `rowLink` for this specific row.
   - `fields` :: See above.
   - `DataCells` :: Contextual component which provides information for
     rendering the data cells of a row.  Has the same block parameter hash as `:data-cells` below.
@@ -494,10 +490,10 @@ Various named blocks are offered, check your Ember Data Table design implementat
   - `otherColumnFields` :: The fields of all columns but the first one to be
     rendered.  Good for designs where the first column should receive
     different styling.
-  - `wrapper` :: See above.
   - `item` :: See above.
   - `rowLink` :: See above.
-  - `rowLinkModel` :: Model to supply to the route specified by `rowLink` for this specific row. # =@wrapper.rowLinkModel
+  - `rowLinkModel` :: See above.
+  - `rowClicked` :: See above.
   - `DataCell` :: Contextual component which provides information for
     rendering an individual cell.  Should receive `@column` with the
     field to render and `@hasCustomBlock` with `{{has-block
@@ -511,6 +507,7 @@ Various named blocks are offered, check your Ember Data Table design implementat
   - `item` :: See above.
   - `rowLink` :: See above.
   - `rowLinkModel` :: See above.
+  - `rowClicked` :: See above.
   - `label` :: See above.
   - `isCustom` :: Wether this cell is explicitly marked to render custom.
   - `hasCustomFields` :: Whether there are any cells that are marked to render custom.

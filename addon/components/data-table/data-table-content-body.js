@@ -1,12 +1,7 @@
-import { cached } from '@glimmer/tracking';
-import { get } from '@ember/object';
-import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 import Component from '@glimmer/component';
-import { includesBy } from '../../helpers/includes-by';
 
 export default class DataTableContentBodyComponent extends Component {
-  @service router;
 
   get offset() {
     var offset = 1; //to avoid having 0. row
@@ -18,40 +13,11 @@ export default class DataTableContentBodyComponent extends Component {
     return offset;
   }
 
-  @cached
-  get wrappedItems() {
-    const selection = this.args.dataTable.selection || []; // TODO: should the dataTable ensure this is an array?
-    const content = this.args.content;
-    return content.map((item) => {
-      return {
-        item: item,
-        isSelected: includesBy(selection, item, this.args.selectionProperty),
-        rowLink: this.args.rowLink,
-        rowLinkModel: this.rowLinkModel(item)
-      };
-    });
-  }
-
-  rowLinkModel(row) {
-    return this.args.rowLinkModelProperty
-      ? get(row, this.args.rowLinkModelProperty)
-      : row;
-  }
-
   @action
-  updateSelection(selectedWrapper, event) {
+  updateSelection(item, event) {
     if( event.target.checked )
-      this.args.dataTable.addItemToSelection(selectedWrapper.item);
+      this.args.dataTable.addItemToSelection(item);
     else
-      this.args.dataTable.removeItemFromSelection(selectedWrapper.item);
-  }
-
-  @action
-  onClickRow(row) {
-    if ( this.args.onClickRow ) {
-      this.args.onClickRow(...arguments);
-    } else if ( this.args.rowLink ) {
-      this.router.transitionTo( this.args.rowLink, this.rowLinkModel(row) );
-    }
+      this.args.dataTable.removeItemFromSelection(item);
   }
 }
