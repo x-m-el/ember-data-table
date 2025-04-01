@@ -1,4 +1,5 @@
 import { upperFirst } from "lodash";
+import { typeOf } from "@ember/utils";
 
 /**
  * Splits a string of definitions by space.
@@ -13,7 +14,7 @@ export function splitDefinitions(string) {
  * Splits a string of definitions by space, or returns the array directly.
  */
 export function definitionsToArray(stringOrArray) {
-  if(Array.isArray(stringOrArray)) {
+  if(typeOf(stringOrArray) === "array") {
     return stringOrArray;
   } else {
     return splitDefinitions(stringOrArray);
@@ -55,45 +56,55 @@ export function deUnderscoreString(string) {
  * a simple string, the item is placed under that key in the returned
  * object and rawLabel is used to provide the unparsed value (without
  * clearing _).  An object may be supplied for further unpacking which
- * may contain the following key/values:
- *
- * - raw: label : Store the raw value as label, do not process further.
- * - default: label : Use the previously parsed value for label as the *
+ * may contain a combination of the following key/values:
+ * - `raw: "label"` : Store the unparsed value in `label`. Do not parse the value.
+ * - `name: "label"`: store the parsed value in `label` and unparsed value in `rawLabel`.
+ * - `default: "label"` : Use the previously stored value for label as the
  *   default value if no value was supplied or if an empty value was
- *   supplied, must also supply name as key.
+ *   supplied. Must be used together with `raw` or `name`.
  *
  * toComponentSpecifications( "number:Nr. location:Gemeente_en_straat land", [{raw: "attribute"},{name: "label", default: "attribute"}])
- * -> [{attribute:"number", label: "Nr."},{attribute:"location",label:"Gemeente en straat",rawLabel:"Gemeente_en_straat"},{attribute:"land",label:"land"}]
+ * -> [{attribute:"number", label: "Nr.", rawLabel: "Nr."},{attribute:"location",label:"Gemeente en straat",rawLabel:"Gemeente_en_straat"},{attribute:"land",label:"land"}]
  */
-export function toComponentSpecifications(string, configuration) {
-  return splitDefinitions(string)
-    .map( (specification) => {
-      let obj = {};
-      let components = specification.split(":");
-      for ( let i = 0; i < configuration.length; i++ ) {
-        const spec = configuration[i];
-        const component = components[i];
-        if ( typeof spec === "string" ) {
-          obj[`raw${upperFirst(spec)}`] = component;
-          obj[spec] = deUnderscoreString(component || "");
-        } else {
-          // object specification
-          if (spec.raw) {
-            obj[spec.raw] = component;
-          }
-          if (spec.name) {
-            if (spec.default && !component) {
-              obj[spec.name] = obj[spec.default];
-            } else {
-              obj[`raw${upperFirst(spec.name)}`] = component;
-              obj[spec.name] = deUnderscoreString(component || "");
-            }
-          }
-          if (!spec.raw && !spec.default) {
-            throw `Specification ${JSON.stringify(spec)} not understood`;
-          }
-        }
-      }
-      return obj;
-    } );
+export function toComponentSpecifications(spaceSeparatedSpecifications, configuration) {
+  return definitionsToArray(spaceSeparatedSpecifications)
+    .map( (specification) => toComponentSpecification(specification, configuration) );
+}
+
+/**
+ * see toComponentSpecifications. This also handles objects with already unpacked specifications.
+ */
+export function toComponentSpecification(specification, configuration) {
+  let obj = {};
+  const component = (i, key, parser = (str) => str) =>
+    typeOf(specification) === 'string'
+      ? parser(specification.split(':')[i] || "")
+      : specification[key];
+
+  for (let i = 0; i < configuration.length; i++) {
+    let spec = configuration[i];
+    if (typeOf(spec) === 'string') {
+      spec = { name: spec };
+    }
+
+    if (!spec.name && !spec.raw && !spec.default) {
+      throw `Specification ${JSON.stringify(spec)} not understood`;
+    }
+
+    if (spec.raw) {
+      obj[spec.raw] = component(i, spec.raw);
+    }
+    else if (spec.name) {
+      obj[spec.name] = component(i, spec.name, deUnderscoreString);
+      if(obj[spec.name]) obj[`raw${upperFirst(spec.name)}`] = component(i, spec.name);
+    }
+
+    if (spec.default && spec.raw && !obj[spec.raw]) {
+      obj[spec.raw] = obj[spec.default];
+    }
+    else if (spec.default && spec.name && !obj[spec.name]) {
+      obj[spec.name] = obj[spec.default];
+    }
+  }
+  return obj;
 }

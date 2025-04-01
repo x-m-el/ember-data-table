@@ -111,13 +111,10 @@ export default class DataTable extends Component {
   }
 
   get fieldsWithMeta() {
-    const fields = this.args.fields;
-
-    if (typeOf(fields) === 'string') {
-      return toComponentSpecifications(fields, [{raw: "attribute"},{name: "label", default: "attribute"}]);
-    } else {
-      return fields || [];
-    }
+    return toComponentSpecifications(this.args.fields, [
+      { raw: 'attribute' },
+      { name: 'label', default: 'attribute' },
+    ]);
   }
 
   attributeToSortParams(attribute) {
@@ -144,21 +141,37 @@ export default class DataTable extends Component {
           || this.customHeaders.includes(attribute),
         isCustom: isCustom
           || this.customFields.includes(attribute),
-        isCustomComponent: (attribute in this.customFieldComponents),
-        customComponent: this.customFieldComponents[attribute] || null
+        customFieldComponent: this.customFieldComponents[attribute] || null,
+        customHeaderComponent: this.customHeaderComponents[attribute] || null
       }));
   }
 
   get customHeaders() {
-    return definitionsToArray(this.args.customHeaders);
+    const headers = this.args.customHeaders;
+    if(typeOf(headers) === "object") {
+      return Object.keys(headers).filter(attr => isEmpty(headers[attr]));
+    } else {
+      return definitionsToArray(headers);
+    }
   }
 
   get customFields() {
-    return definitionsToArray(this.args.customFields);
+    const fields = this.args.customFields;
+    if(typeOf(fields) === "object") {
+      return Object.keys(fields).filter(attr => isEmpty(fields[attr]));
+    } else {
+      return definitionsToArray(fields);
+    }
   }
 
   get customFieldComponents() {
-    return this.args.customFieldComponents || {};
+    const fields = this.args.customFields;
+    return typeOf(fields) === "object"? fields : {};
+  }
+
+  get customHeaderComponents() {
+    const headers = this.args.customHeaders;
+    return typeOf(headers) === "object"? headers : {};
   }
 
   get sortableFields() {

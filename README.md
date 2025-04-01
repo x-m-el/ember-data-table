@@ -111,12 +111,12 @@ The `@customFields` property lists which fields which receive custom rendering. 
 
 This configuration renders `label` as usual.  `price` and `available` render through the named slot.  Note that the order of the columns is still the order of `@fields`.
 
-Alternatively the components to use for rendering can be passed directly via `@customFieldComponents`:
+Alternatively the components to use for rendering can be passed directly via `@customFields` by passing an object:
 ```hbs
 <RawDataTable
     @content={{@model}}
     @fields="label available price"
-    @customFieldComponents={{hash available=(component "availability") price=(component "price") }}
+    @customFields={{hash available=(component "availability") price=(component "price") }}
   />
 ```
 
@@ -124,13 +124,23 @@ Alternatively the components to use for rendering can be passed directly via `@c
 
 Supply column headers by adding extra properties to the fields attribute, split by a colon.  A single `_` gets replaced by a space and two underscores get replaced by a single underscore
 
-```
+```hbs
   <RawDataTable
     @content={{@model}}
     @fields="label:Name available price:Current_price"
     ...
   />
 ```
+
+Alternatively, pass the field (key `attribute`) and header (key `label`) via an object.  This is only possible when passing the fields via an array.
+```hbs
+  <RawDataTable
+    @content={{@model}}
+    @fields={{array "label:Name" "available" (hash attribute="price" label="Current price")}}
+    ...
+  />
+```
+
 
 ## Discussions
 
@@ -195,7 +205,7 @@ The passing of data from route and controller, and moving data back up.
 
 How to show different things in Ember Data Table
 
-- `@fields` :: Space-separated string of fields to render (in given order) with extra options.  Splitting a field with a colon (`:`) makes the first element be the attribute and the second be the label.  Use an `_` to render a space in the label. E.g.: `@fields="label:Name priceInEuros:Euro_price"`.
+- `@fields` :: Array of objects/strings or space-separated string of fields to render (in given order) with extra options.  Each field can consists of two parts, split by a colon (`:`) for string syntax.  The first part is the attribute (key `attribute`, in string syntax `_` are rendered as spaces), the second an optional label (key `label`).  If no label is provided, the attribute is used as the label.  E.g.: `@fields="label:Name priceInEuros:Euro_price available"` or `@fields={{array "label:Name" (hash attribute="priceInEuros" label="Euro price") "available"}}`.
 - `@sortableFields` :: Array or space-separated string of fields by which the user may sort.
   Fields should use the attribute names of `@fields`.  By default all fields are sortable.  Set to an empty list or empty string to disable sorting.
 - `@noDataMessage` :: Custom message to show when no data is available.
@@ -206,29 +216,30 @@ How to show different things in Ember Data Table
 - `@enableLineNumbers` :: Set to truthy to show line numbers in the
   table.
 - `@sizes` :: Array or space-separated string of page size choices that should be shown in the pagination block.  Defaults to `[5, 10, 25, 50, 100]`.  Set to an empty list or empty string to hide.
-- `@links` :: A space-separated string of links with extra options.  
-  Each row may contain a number of links.  Each link consists of one
-  to three parts split by a colon.  The first part is the route, the
-  second is the label (`_` are rendered as spaces), the third is an icon to use instead of the label
-  if supported (screen readers should see the label still).  E.g.:
-  `@links="products.edit:edit:pencil products.show:open:file-earmark-richtext"`.  
+- `@links` :: Array of objects/strings or a space-separated string of links with extra options.  
+  Each row may contain a number of clickable links rendered in a separate column.  Each link consists of one
+  to three parts, split by a colon for string syntax.  The first part is the route (key `route`), the
+  second is the label (key `label`, in string syntax `_` are rendered as spaces), the third is an icon (key `icon`) to use instead of the label
+  if supported (screen readers should see the label still).  E.g. (both equivalent):
+  `@links="products.edit:edit:pencil products.show:open:file-earmark-richtext"`   
+  `@links={{array (hash route="products.edit" label="edit" icon="pencil") "products.show:open:file-earmark-richtext"}}`.  
   Note that only the route is required in which case the label is
   derived and no icon is shown.  By default the link receives the `id`
   of the item, but is configurable using the `@linksModelProperty`
   attribute (see below).
-- `@customHeaders` :: Array or space-separated string of attributes 
-  for which a custom header will
-  be rendered through the `:data-header` named block.  Each of the
-  attributes mentioned here won't render the default header but will
-  instead dispatch to the named block.  Check which attribute is being
-  rendered in the named block to render the right label.  Check in the
-  implementation you override how sorting is supported, if sorting is needed for this header.
+- `@customHeaders` :: An object (hash) or an array/space-separated string of attributes.
+  When passing an array/space-separated string, the attributes will be rendered through the `:data-header` named block, instead of rendering the default header.
+  When passing an object, set as key the attribute and value the component to use for rendering.  The component will receive in `@header` the same hash given to the `:data-header` block.  If value is empty, the attribute will be rendered through the `:data-header` named block.
+  For the `:data-header` named block, check which attribute is being rendered to render the right label.  
+  Check in the implementation you override how sorting is supported, if sorting is needed for this header.
   
   ```hbs
   <RawDataTable
     ...
-    @customHeaders={{array "label" "priceInEuros"}}
-    <!-- or @customHeaders="label priceInEuros" -->
+        @customHeaders={{hash label="" priceInEuros="" available=(component   customComponent)}}
+    or  @customHeaders={{array "label" "priceInEuros"}}
+    or  @customHeaders="label priceInEuros"
+    
     ...>
     <:data-header as |header|>
       {{#if (eq header.attribute "label")}}
@@ -240,17 +251,17 @@ How to show different things in Ember Data Table
   </RawDataTable>
   ```
 
-- `@customFields` :: Array or space-separated string of attributes for which the fields will
-  receive a custom rendering.  This will render the individual cell
-  values based on the `:data-cell` custom block.  You may use the
-  attribute name to verify which attribute the custom block is rendering
-  for.
+- `@customFields` :: An object (hash) or an array/space-separated string of attributes. 
+  When passing an array/space-separated string, the attributes will be rendered through the `:data-cell` named block.
+  When passing an object, set as key the attribute and value the component to use for rendering.  The component will receive in `@cell` the same hash given to the `:data-cell` block.  If value is empty, the attribute will be rendered through the `:data-cell` named block.
+  For the `:data-cell` named block, use the attribute name to verify which attribute the custom block is rendering for.
 
   ```hbs
   <RawDataTable
     ...
-    @customFields={{array "label" "priceInEuros"}}
-    <!-- or @customFields="label priceInEuros" -->
+        @customFields={{hash label="" priceInEuros="" available=(component   customComponent)}}
+    or  @customFields={{array "label" "priceInEuros" }}
+    or  @customFields="label priceInEuros" 
     ...>
     <:data-cell as |cell|>
       {{#if (eq cell.attribute "label")}}
@@ -261,8 +272,6 @@ How to show different things in Ember Data Table
     </:data-cell>
   </RawDataTable>
   ```
-- `@customFieldComponents`: An object (hash) with key the attribute of the field and
-  value the component to use for rendering.  The component will receive in `@cell` the same hash given to a `:data-cell` block (see below).
 
 #### Ember Data Table functional configuration
 
@@ -379,11 +388,11 @@ Various named blocks are offered, check your Ember Data Table design implementat
         `@attributeToSortParams`.
       - `hasCustomHeader` :: whether this column has a custom header or
         not (meaning it should be rendered through the `:data-header`
-        named block)
+        named block).
       - `isCustom` :: whether the field rendering should be custom or not
         (meaning data cells should be rendered through `:data-cell`).
-      - `isCustomComponent` :: Whether the field rendering should use the `customComponent` to render.
-      - `customComponent` :: Available if the field rendering should use this custom component for rendering.
+      - `customFieldComponent` :: Available if the field rendering should use this custom component for rendering.
+      - `customHeaderComponent` :: Available if the column header should use this custom component for rendering.
     - `dataHeadersInfo` :: information for the data headers.  Supplied to
       `:data-headers` named block.
     - `ThSortable` :: Contextual component.  When calling this component

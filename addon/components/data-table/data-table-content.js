@@ -19,6 +19,9 @@ export default class DataTableContentComponent extends Component {
    *
    * Behaviour for `___` is undefined.
    *
+   * Can pass a space-separated string or an array.
+   * The array can already contain an object with the transformed link
+   *
    * Yields an array of objects to represent the linked routes.
    * [ { route: "products.show", label: "Show product", icon: "show-icon" } ]
    */
