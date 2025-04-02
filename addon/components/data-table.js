@@ -236,7 +236,7 @@ export default class DataTable extends Component {
   @action
   addItemToSelection(item) {
     this.removeItemFromSelection(item); // in case the item was already selected
-    this.selection = [item, ...this.selection]; // create new array to trigger setter if `selection`
+    this.selection = [...this.selection, item]; // create new array to trigger setter if `selection`
   }
   @action
   removeItemFromSelection(item) {

@@ -1,24 +1,8 @@
-{{page-title "Dummy"}}
+<ul>
+  <li><LinkTo @route="simple-table-ed">Simple table (ember-data)</LinkTo></li>
+  <li><LinkTo @route="simple-table-pojo">Simple table (objects)</LinkTo></li>
+  <li><LinkTo @route="adv-table-ed">Advanced table (ember-data)</LinkTo></li>
+  <li><LinkTo @route="adv-table-pojo">Advanced table (objects)</LinkTo></li>
+</ul>
 
-<div class="layout-row flex layout-align-center">
-  <div class="container">
-    <h1 id="title">Ember Data Table demo</h1>
-    <h2>Simple table</h2>
-    <blockquote>Generated table header and body based on given <code>fields</code></blockquote>
-    <RawDataTable
-      @content={{@model}}
-      @fields="firstname lastname age created modified"
-      @isLoading={{this.isLoadingModel}}
-      @filter={{this.filter}}
-      @sort={{this.sort}}
-      @page={{this.page}}
-      @size={{this.size}}
-      @updateFilter={{fn (mut this.filter)}}
-      @updateSort={{fn (mut this.sort)}}
-      @updatePage={{fn (mut this.page)}}
-      @updatePageSize={{fn (mut this.size)}}
-       >
-      </RawDataTable>
-  </div>
-</div>
-
+{{outlet}}

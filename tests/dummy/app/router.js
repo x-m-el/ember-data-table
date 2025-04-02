@@ -6,4 +6,11 @@ export default class Router extends EmberRouter {
   rootURL = config.rootURL;
 }
 
-Router.map(function () {});
+Router.map(function () {
+  this.route('simple-table-ed');
+  this.route('simple-table-pojo');
+  this.route('adv-table-ed');
+  this.route('adv-table-pojo');
+  this.route('person', { path: '/people/:id/' });
+  this.route('person-details', { path: '/people-details/:id/' });
+});
