@@ -8,7 +8,7 @@ Data table for EmberJS
 
 ### Add basic Ember Data Table
 
-Find an adaptation of Ember Data Table for the design framework of your choice or implement a custom variant for your application.  This tutorial uses `RawDataTable`.
+Find an adaptation of Ember Data Table for the design framework of your choice or implement a custom variant for your application.  This tutorial uses `RawDataTable`. Alternatively look at the examples in [the dummy app](/addon/tests/dummy/app).
 
 Generate a route for products first:
 
@@ -22,24 +22,73 @@ The tutorial assumes a model exists with `label` and `price` which you can gener
 ember g model product label:string price:number
 ```
 
-Next you'll fetch content from the back-end using standard model hooks and query parameters.  Extending from the provided Route and Controller is the shortest form.
-
+Next you'll fetch content from the back-end using standard model hooks and query parameters.
 For the route stored in `/app/routes/products/index.js` write:
 
 ```javascript
-import DataTableRoute from 'ember-data-table/route';
+import { inject as service } from '@ember/service';
+import { action } from '@ember/object';
+import Route from '@ember/routing/route';
 
-export default class ProductsIndexRoute extends DataTableRoute {
+export default class DataTableRoute extends Route {
+  @service store;
+
   modelName = 'product';
+
+  queryParams = {
+    filter: { refreshModel: true },
+    page: { refreshModel: true },
+    size: { refreshModel: true },
+    sort: { refreshModel: true },
+  };
+
+  model(params) {
+    const options = {
+      sort: params.sort,
+      page: {
+        number: params.page,
+        size: params.size,
+      },
+    };
+    if (params.filter) {
+      options['filter'] = params.filter;
+    }
+    return this.store.query(this.modelName, options);
+  }
+
+  @action
+  loading(transition) {
+    // eslint-disable-next-line ember/no-controller-access-in-routes
+    let controller = this.controllerFor(this.routeName);
+
+    if(controller) {
+      controller.isLoadingModel = true;
+
+      transition.finally(function () {
+        controller.isLoadingModel = false;
+      });
+    }
+
+    return true; // bubble the loading event
+  }
 }
 ```
 
 For the controller stored in `/app/controllers/product/index.js` write:
 
 ```javascript
-import DataTableController from 'ember-data-table/controller';
+import { tracked } from '@glimmer/tracking';
+import Controller from '@ember/controller';
 
-export default class ProductsIndexController extends DataTableController {}
+export default class DataTableController extends Controller {
+  queryParams = ['size', 'page', 'filter', 'sort'];
+
+  @tracked size = 10;
+  @tracked page = 0;
+  @tracked filter = '';
+  @tracked sort = '';
+  @tracked isLoadingModel = false;
+}
 ```
 
 These steps are the same for any Ember Data Table flavour, the following visualizes `RawDataTable`:
@@ -62,6 +111,8 @@ These steps are the same for any Ember Data Table flavour, the following visuali
 Visiting `http://localhost:4200/products` will now show the Raw Data Table.
 
 If the backend does not provide pagination details in `@model.meta` or total items in `@model.meta.count`, the total can be provided via `@total` to get working pagination buttons.
+
+See [serializer](/addon/serializer.js) for a serializer to use or use as inspiration to correctly parse meta information for pagination. 
 
 ## How-to guides
 
@@ -169,6 +220,9 @@ The downside of this approach is a large handlebars file, but with good reason. 
 The default implementation will be used most often, but the end-user receives an escape hatch on every level to overwrite exactly the piece they need.  The focus is placed on what diverges from the default where we use Ember Data Table.  This makes maintenance and upgrades easier and lets apps better express the intended diversion.
 
 ## Reference
+
+### Serializer
+Ember Data Table expects meta (pagination) information in a specific format. The provided [serializer](/addon/serializer.js) can be used in case of a JSONAPI, or it can be used as an inspiration for a custom serializer.
 
 ### Arguments to Ember Data Table
 
@@ -585,3 +639,6 @@ Various named blocks are offered, check your Ember Data Table design implementat
     contain page links.
   - `backendPageOffset` :: The current back-end page offset (either
     calculated or guessed).
+
+## Development
+There is a [dummy app](/addon/tests/dummy/app) for example configurations to test changes. The dummy app can be run via `npm start`.
