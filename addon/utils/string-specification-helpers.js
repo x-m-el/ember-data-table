@@ -1,4 +1,4 @@
-import { upperFirst } from "lodash";
+import upperFirst from "lodash.upperfirst";
 import { typeOf } from "@ember/utils";
 
 /**
