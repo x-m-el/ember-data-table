@@ -1,11 +1,8 @@
 import { module, test } from 'qunit';
-import { deUnderscoreString, splitDefinitions, toComponentSpecifications } from 'ember-data-table/utils/string-specification-helpers';
+import { deUnderscoreString, splitDefinitions } from 'ember-data-table/utils/string-specification-helpers';
+import { toComponentSpecification } from 'ember-data-table/utils/string-specification-helpers';
 
-function convertDefinition(string) {
-  return toComponentSpecifications(string || "", [{ raw: "route" }, "label", "icon"]);
-}
-
-module('Unit | Component | data-table-content', function() {
+module('Unit | Utils | string-specification-helpers', function() {
   test('it strips underscores', function(assert) {
     const checks = [["one", "one"],
     ["one_two", "one two"],
@@ -28,12 +25,30 @@ module('Unit | Component | data-table-content', function() {
   });
 
   test('it creates definition objects', function(assert) {
+    function convertDefinition(string) {
+      return toComponentSpecification(string || "", [{ raw: "route" }, "label", "icon"]);
+    }
+
     const checks = [
+      [{route: "hello"}, {
+        route: "hello",
+        label: null,
+        icon: null,
+        rawLabel: null,
+        rawIcon: null
+      }],
       ["hello", {
         route: "hello",
         label: null,
         icon: null,
         rawLabel: null,
+        rawIcon: null
+      }],
+      [{ route: "hello.world", label: "Hello World"}, {
+        route: "hello.world",
+        label: "Hello World",
+        icon: null,
+        rawLabel: "Hello World",
         rawIcon: null
       }],
       ["hello.world:Hello_World", {
@@ -49,7 +64,15 @@ module('Unit | Component | data-table-content', function() {
         icon: "add-icon-thing",
         rawLabel: "Hello_World",
         rawIcon: "add-icon-thing"
-      }]];
+      }],
+      [{ route: "hello.world", label: "Hello World", icon: "add-icon-thing" },
+        {
+          route: "hello.world",
+          label: "Hello World",
+          icon: "add-icon-thing",
+          rawLabel: "Hello World",
+          rawIcon: "add-icon-thing"
+        }]];
 
     assert.expect(checks.length);
 

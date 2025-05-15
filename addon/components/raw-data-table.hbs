@@ -89,9 +89,9 @@
                   {{#if (has-block "selection-menu")}}
                     {{yield selected to="selection-menu"}}
                   {{else}}
-                    {{#if (has-block "selection-menu-actions")}}
                       <span class="item-count">{{selected.selectionCount}} item(s) selected</span>
                       <button type="button" {{on "click" selected.clearSelection}}>Cancel</button>
+                    {{#if (has-block "selection-menu-actions")}}
                       {{yield selected to="selection-menu-actions"}}
                     {{/if}}
                   {{/if}}
@@ -110,7 +110,7 @@
         {{yield content to="content"}}
       {{else}}
         <div class="data-table-content">
-          <table class="data-table {{content.dataTable.tableClass}}">
+          <table class="data-table">
             {{!-- START: headers --}}
             <content.Header as |header|>
               {{#if (has-block "full-header")}}

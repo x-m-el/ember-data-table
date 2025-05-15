@@ -63,6 +63,8 @@ export function deUnderscoreString(string) {
  *   default value if no value was supplied or if an empty value was
  *   supplied. Must be used together with `raw` or `name`.
  *
+ * Unspecified components will receive the value `null`.
+ *
  * toComponentSpecifications( "number:Nr. location:Gemeente_en_straat land", [{raw: "attribute"},{name: "label", default: "attribute"}])
  * -> [{attribute:"number", label: "Nr.", rawLabel: "Nr."},{attribute:"location",label:"Gemeente en straat",rawLabel:"Gemeente_en_straat"},{attribute:"land",label:"land"}]
  */
@@ -76,10 +78,14 @@ export function toComponentSpecifications(spaceSeparatedSpecifications, configur
  */
 export function toComponentSpecification(specification, configuration) {
   let obj = {};
-  const component = (i, key, parser = (str) => str) =>
-    typeOf(specification) === 'string'
-      ? parser(specification.split(':')[i] || "")
-      : specification[key];
+  const component = (i, key, parser = (str) => str) => {
+    if(typeOf(specification) === 'string') {
+      const spec = specification.split(':')[i] || null;
+      return spec && parser(spec)
+    }else {
+      return specification[key] || null;
+    }
+  }
 
   for (let i = 0; i < configuration.length; i++) {
     let spec = configuration[i];
@@ -96,7 +102,7 @@ export function toComponentSpecification(specification, configuration) {
     }
     else if (spec.name) {
       obj[spec.name] = component(i, spec.name, deUnderscoreString);
-      if(obj[spec.name]) obj[`raw${upperFirst(spec.name)}`] = component(i, spec.name);
+      obj[`raw${upperFirst(spec.name)}`] = component(i, spec.name);
     }
 
     if (spec.default && spec.raw && !obj[spec.raw]) {

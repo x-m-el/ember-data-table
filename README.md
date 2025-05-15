@@ -355,7 +355,8 @@ Various named blocks are offered, check your Ember Data Table design implementat
   - `dataTable` :: The DataTable object.
 
 - `selection-menu-actions` :: Contains the actions which can be applied
-  to a selection.  This is likely custom for each use of the Ember Data
+  to a selection, rendered at the same time as `:selection-menu`.  
+  This is likely custom for each use of the Ember Data
   Table (versus the template).  Receives the same argument as
   `:selection-menu`.
 
