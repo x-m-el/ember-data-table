@@ -110,6 +110,7 @@
         {{yield content to="content"}}
       {{else}}
         <div class="data-table-content">
+          {{!-- template-lint-disable table-groups --}}
           <table class="data-table">
             {{!-- START: headers --}}
             <content.Header as |header|>
@@ -182,12 +183,14 @@
                           {{#if (has-block "row")}}
                             {{yield row to="row"}}
                           {{else}}
-                            <tr role={{if row.hasClickRowAction "button" "row"}}
-                              class="{{if row.isSelected "selected"}} {{if row.hasClickRowAction "clickable"}}"
-                              {{on "click" row.rowClicked}}>
+                            <RawDataTableClickableRow
+                              @hasClickRowAction={{row.hasClickRowAction}}
+                              @isSelected={{row.isSelected}}
+                              @rowClicked={{row.rowClicked}}
+                            >
                               {{#if row.enableSelection}}
                                 <td class="center">
-                                  {{input type="checkbox" checked=row.isSelected click=row.toggleSelected}}
+                                  <input type="checkbox" aria-label="Select row" checked={{row.isSelected}} {{on "click" row.toggleSelected}} />
                                 </td>
                               {{/if}}
                               {{#if row.enableLineNumbers}}
@@ -270,7 +273,7 @@
                                   </td>
                                 {{/if}}
                               {{/if}}
-                            </tr>
+                            </RawDataTableClickableRow>
                           {{/if}}
                         </body.Row>
                       {{/each}}

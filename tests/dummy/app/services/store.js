@@ -2,7 +2,7 @@
 import Store from 'ember-data/store';
 
 export default class StoreService extends Store {
-  async query(modelName, query, options) {
+  async query(modelName) {
     if (modelName === 'person') {
       await new Promise(r => setTimeout(r, 300));
     }

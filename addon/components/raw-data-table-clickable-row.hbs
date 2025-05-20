@@ -1,0 +1,15 @@
+{{! should be added to raw-data-table.gjs when using template syntax }}
+{{#if @hasClickRowAction}}
+  <tr
+    role='button'
+    class='clickable {{if @isSelected 'selected'}}'
+    {{on 'click' @rowClicked}}
+    ...attributes
+  >
+    {{yield}}
+  </tr>
+{{else}}
+  <tr class="{{if @isSelected 'selected'}}" role='row' ...attributes>
+    {{yield}}
+  </tr>
+{{/if}}
