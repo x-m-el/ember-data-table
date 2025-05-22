@@ -1,28 +1,38 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
-import { hbs } from 'ember-cli-htmlbars';
+import Row from '../../../../app/components/data-table/row.js';
 
 module('Integration | Component | data-table/row', function (hooks) {
   setupRenderingTest(hooks);
 
   test('it renders', async function (assert) {
-    // Set any properties with this.set('myProperty', 'value');
-    // Handle any actions with this.set('myAction', function(val) { ... });
+    const self = this;
+    this.set('onClickRow', () => undefined);
+    this.set('toggleSelected', () => undefined);
 
-    this.set('onClickRow', () => undefined );
-    this.set('toggleSelected', () => undefined );
-
-    await render(hbs`<DataTable::Row @onClickRow={{this.onClickRow}} @toggleSelected={{this.toggleSelected}} />`);
+    await render(
+      <template>
+        <Row
+          @onClickRow={{self.onClickRow}}
+          @toggleSelected={{self.toggleSelected}}
+        />
+      </template>,
+    );
 
     assert.dom(this.element).hasText('');
 
     // Template block usage:
-    await render(hbs`
-      <DataTable::Row @onClickRow={{this.onClickRow}} @toggleSelected={{this.toggleSelected}}>
-        template block text
-      </DataTable::Row>
-    `);
+    await render(
+      <template>
+        <Row
+          @onClickRow={{self.onClickRow}}
+          @toggleSelected={{self.toggleSelected}}
+        >
+          template block text
+        </Row>
+      </template>,
+    );
 
     assert.dom(this.element).hasText('template block text');
   });

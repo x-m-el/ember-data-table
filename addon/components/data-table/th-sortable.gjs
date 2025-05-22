@@ -1,25 +1,44 @@
 import { action } from '@ember/object';
 import Component from '@glimmer/component';
+import { hash } from '@ember/helper';
 
+/* Used in: data-table/data-table-content-header */
 export default class ThSortableComponent extends Component {
+  <template>
+    {{yield
+      (hash
+        label=@field.label
+        attribute=@field.attribute
+        isSortable=@field.isSortable
+        isSorted=this.isSorted
+        toggleSort=this.toggleSort
+        nextSort=this.nextSort
+        isAscending=this.isAscending
+        isDescending=this.isDescending
+        sortDirection=this.sortDirection
+        renderCustomBlock=this.renderCustomBlock
+        isCustom=this.isCustom
+        hasCustom=this.hasCustom
+      )
+    }}
+  </template>
   get sortParameters() {
     return this.args.field.sortParameters;
   }
 
   get sortDirection() {
-    for ( const key in this.sortParameters )
-      if( this.args.sort == this.sortParameters[key] )
-        return key;
+    for (const key in this.sortParameters)
+      if (this.args.sort == this.sortParameters[key]) return key;
 
     return '';
   }
 
   get isAscending() {
-    return this.sortDirection === "asc";
+    return this.sortDirection === 'asc';
   }
 
   get isDescending() {
-    return this.sortDirection === "desc";
+    return this.sortDirection === 'desc';
   }
 
   get isSorted() {
@@ -33,7 +52,9 @@ export default class ThSortableComponent extends Component {
     //
     // Note: data table can't make this decision because it doesn't know
     // whether a custom block was supplied.
-    return this.args.hasCustomBlock && (this.isCustom || !this.hasCustomHeaders);
+    return (
+      this.args.hasCustomBlock && (this.isCustom || !this.hasCustomHeaders)
+    );
   }
 
   get isCustom() {
@@ -41,15 +62,16 @@ export default class ThSortableComponent extends Component {
   }
 
   get hasCustomHeaders() {
-    return this.args.fields.find(({hasCustomHeader}) => hasCustomHeader) || false;
+    return (
+      this.args.fields.find(({ hasCustomHeader }) => hasCustomHeader) || false
+    );
   }
 
   get availableSortOptions() {
     const options = [];
-    Object
-      .keys( this.sortParameters )
+    Object.keys(this.sortParameters)
       .sort() // for asc and desc, asc first then desc, the rest also sorted for now
-      .map( (key) => options.push(key) );
+      .map((key) => options.push(key));
     options.push(''); // no sorting
     return options;
   }
@@ -68,21 +90,3 @@ export default class ThSortableComponent extends Component {
     this.args.updateSort(this.sortParameters[this.nextSort]);
   }
 }
-
-{{!-- Used in: data-table/data-table-content-header --}}
-{{yield (hash
-    label=@field.label
-    attribute=@field.attribute
-
-    isSortable=@field.isSortable
-    isSorted=this.isSorted
-    toggleSort=this.toggleSort
-    nextSort=this.nextSort
-
-    isAscending=this.isAscending
-    isDescending=this.isDescending
-    sortDirection=this.sortDirection
-
-    renderCustomBlock=this.renderCustomBlock
-    isCustom=this.isCustom
-    hasCustom=this.hasCustom)}}

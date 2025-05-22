@@ -1,7 +1,43 @@
 import Component from '@glimmer/component';
 import { toComponentSpecifications } from '../../utils/string-specification-helpers';
+import { hash } from '@ember/helper';
+import DataTableDataTableContentHeader from './data-table-content-header.js';
+import DataTableDataTableContentBody from './data-table-content-body.js';
 
+/* Used in: data-table.hbs */
 export default class DataTableContentComponent extends Component {
+  <template>
+    {{yield
+      (hash
+        Header=(component
+          DataTableDataTableContentHeader
+          enableSelection=@enableSelection
+          enableLineNumbers=@enableLineNumbers
+          sort=@sort
+          updateSort=@updateSort
+          hasLinks=this.hasLinks
+          customHeaders=@customHeaders
+          dataTable=@dataTable
+          fields=@fields
+        )
+        Body=(component
+          DataTableDataTableContentBody
+          content=@content
+          enableSelection=@enableSelection
+          selectionProperty=@selectionProperty
+          enableLineNumbers=@enableLineNumbers
+          noDataMessage=@noDataMessage
+          onClickRow=@onClickRow
+          linkedRoutes=this.linkedRoutes
+          rowLink=@rowLink
+          rowLinkModelProperty=@rowLinkModelProperty
+          dataTable=@dataTable
+          fields=@fields
+        )
+        dataTable=@dataTable
+      )
+    }}
+  </template>
   get hasLinks() {
     return this.linkedRoutes.length > 0;
   }
@@ -26,36 +62,13 @@ export default class DataTableContentComponent extends Component {
    * [ { route: "products.show", label: "Show product", icon: "show-icon" } ]
    */
   get linkedRoutes() {
-    return toComponentSpecifications(this.args.links || "", [{ raw: "route" }, "label", "icon"])
-      .map( (spec) => {
-        spec.linksModelProperty = this.args.linksModelProperty;
-        return spec;
-      } );
+    return toComponentSpecifications(this.args.links || '', [
+      { raw: 'route' },
+      'label',
+      'icon',
+    ]).map((spec) => {
+      spec.linksModelProperty = this.args.linksModelProperty;
+      return spec;
+    });
   }
 }
-
-{{!-- Used in: data-table.hbs --}}
-{{yield
-     (hash
-       Header=(component "data-table/data-table-content-header"
-         enableSelection=@enableSelection
-         enableLineNumbers=@enableLineNumbers
-         sort=@sort
-         updateSort=@updateSort
-         hasLinks=this.hasLinks
-         customHeaders=@customHeaders
-         dataTable=@dataTable
-         fields=@fields)
-       Body=(component "data-table/data-table-content-body"
-         content=@content
-         enableSelection=@enableSelection
-         selectionProperty=@selectionProperty
-         enableLineNumbers=@enableLineNumbers
-         noDataMessage=@noDataMessage
-         onClickRow=@onClickRow
-         linkedRoutes=this.linkedRoutes
-         rowLink=@rowLink
-         rowLinkModelProperty=@rowLinkModelProperty
-         dataTable=@dataTable
-         fields=@fields)
-       dataTable=@dataTable)}}

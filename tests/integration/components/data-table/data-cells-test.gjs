@@ -1,25 +1,24 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
-import { hbs } from 'ember-cli-htmlbars';
+import DataCells from '../../../../app/components/data-table/data-cells.gjs';
 
-module('Integration | Component | data-table/data-cells', function(hooks) {
+module('Integration | Component | data-table/data-cells', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('it renders', async function(assert) {
-    // Set any properties with this.set('myProperty', 'value');
-    // Handle any actions with this.set('myAction', function(val) { ... });
-
-    await render(hbs`<DataTable::DataCells />`);
+  test('it renders', async function (assert) {
+    await render(<template><DataCells /></template>);
 
     assert.dom(this.element).hasText('');
 
     // Template block usage:
-    await render(hbs`
-      <DataTable::DataCells>
-        template block text
-      </DataTable::DataCells>
-    `);
+    await render(
+      <template>
+        <DataCells>
+          template block text
+        </DataCells>
+      </template>,
+    );
 
     assert.dom(this.element).hasText('template block text');
   });

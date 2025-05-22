@@ -1,12 +1,14 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
-import { hbs } from 'ember-cli-htmlbars';
+import RawDataTable from '../../../app/components/raw-data-table.js';
 
 module('Integration | Component | number pagination', function (hooks) {
   setupRenderingTest(hooks);
 
   test('it renders', async function (assert) {
+    const self = this;
+
     this.set('page', 0);
     this.set('meta', {
       pagination: {
@@ -15,12 +17,11 @@ module('Integration | Component | number pagination', function (hooks) {
       },
     });
 
-    await render(hbs`
-      <RawDataTable
-        @page={{this.page}}
-        @meta={{this.meta}}
-      />
-    `);
+    await render(
+      <template>
+        <RawDataTable @page={{self.page}} @meta={{self.meta}} />
+      </template>,
+    );
 
     assert.dom('.raw-data-table .data-table-pagination').exists({ count: 1 });
   });

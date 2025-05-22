@@ -1,8 +1,23 @@
 import { action } from '@ember/object';
 import { cancel, debounce } from '@ember/runloop';
 import Component from '@glimmer/component';
+import { hash } from '@ember/helper';
 
+/* Used in: data-table.hbs */
 export default class TextSearchComponent extends Component {
+  <template>
+    {{yield
+      (hash
+        filter=@filter
+        placeholder=@placeholder
+        autoSearch=@autoSearch
+        submitForm=this.submitForm
+        handleInput=this.handleInput
+        handleAutoInput=this.handleAutoInput
+        handleDirectInput=this.handleDirectInput
+      )
+    }}
+  </template>
   enteredValue = undefined;
 
   autoDebouncePid = undefined;
@@ -10,14 +25,22 @@ export default class TextSearchComponent extends Component {
   @action
   handleAutoInput(event) {
     this.enteredValue = event.target.value;
-    this.autoDebouncePid = debounce(this, this.submitCurrent, this.args.searchDebounceTime);
+    this.autoDebouncePid = debounce(
+      this,
+      this.submitCurrent,
+      this.args.searchDebounceTime,
+    );
   }
 
   @action
   handleInput(event) {
     this.enteredValue = event.target.value;
-    if(this.args.autoSearch !== false) {
-      this.autoDebouncePid = debounce(this, this.submitCurrent, this.args.searchDebounceTime);
+    if (this.args.autoSearch !== false) {
+      this.autoDebouncePid = debounce(
+        this,
+        this.submitCurrent,
+        this.args.searchDebounceTime,
+      );
     }
   }
 
@@ -44,13 +67,3 @@ export default class TextSearchComponent extends Component {
     this.submitCurrent();
   }
 }
-
-{{!-- Used in data-table.hbs --}}
-{{yield (hash
-    filter=@filter
-    placeholder=@placeholder
-    autoSearch=@autoSearch
-    submitForm=this.submitForm
-    handleInput=this.handleInput
-    handleAutoInput=this.handleAutoInput
-    handleDirectInput=this.handleDirectInput)}}

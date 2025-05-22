@@ -1,5 +1,6 @@
 import { action } from '@ember/object';
 import Component from '@glimmer/component';
+import { hash } from '@ember/helper';
 
 const humanPageOffset = 1; // humans assume the first page has number 1
 
@@ -33,6 +34,7 @@ function zeroToHumanBased(number) {
   return number + humanPageOffset;
 }
 
+/* Used in: data-table.hbs */
 /**
  * Helpers for pagination buttons.
  *
@@ -46,10 +48,40 @@ function zeroToHumanBased(number) {
  * yielded block are what humans would understand.
  */
 export default class NumberPaginationComponent extends Component {
+  <template>
+    {{yield
+      (hash
+        startIndex=this.startIndex
+        endIndex=this.endIndex
+        total=this.total
+        hasTotal=this.hasTotal
+        pageSize=@size
+        pageNumber=this.humanPage
+        numberOfPages=this.numberOfPages
+        pageOptions=this.pageOptions
+        summarizedPageOptions=this.summarizedPageOptions
+        sizeOptions=@sizeOptions
+        firstPage=this.firstPage
+        lastPage=this.lastPage
+        nextPage=this.nextPage
+        previousPage=this.previousPage
+        updatePage=this.updatePage
+        humanPage=this.humanPage
+        updateHumanPage=this.updateHumanPage
+        selectSizeOption=this.selectSizeOption
+        setSizeOption=this.setSizeOption
+        hasMultiplePages=this.hasMultiplePages
+        isFirstPage=this.isFirstPage
+        isLastPage=this.isLastPage
+        hasPreviousPage=this.hasPreviousPage
+        hasNextPage=this.hasNextPage
+        meta=@meta
+        backendPageOffset=this.backendPageOffset
+      )
+    }}
+  </template>
   get currentBackendPage() {
-    return this.args.page
-      ? parseInt(this.args.page)
-      : this.backendPageOffset;
+    return this.args.page ? parseInt(this.args.page) : this.backendPageOffset;
   }
 
   /**
@@ -58,10 +90,10 @@ export default class NumberPaginationComponent extends Component {
    * hope.
    */
   get backendPageOffset() {
-    if( this.args.backendPageOffset !== undefined ) {
+    if (this.args.backendPageOffset !== undefined) {
       // users may supply this
       return this.args.backendPageOffset;
-    } else if( this.args.meta?.links?.first?.number !== undefined ) {
+    } else if (this.args.meta?.links?.first?.number !== undefined) {
       // or we could derive from the backend
       return this.args.meta.links.first.number;
     } else {
@@ -76,7 +108,10 @@ export default class NumberPaginationComponent extends Component {
    * what the API supplies.
    */
   get humanPage() {
-    return backendToHuman(this.args.page || this.backendPageOffset, this.backendPageOffset);
+    return backendToHuman(
+      this.args.page || this.backendPageOffset,
+      this.backendPageOffset,
+    );
   }
   set humanPage(number) {
     this.updatePage(humanToBackend(number || 0, this.backendPageOffset));
@@ -91,19 +126,15 @@ export default class NumberPaginationComponent extends Component {
   }
 
   get lastPage() {
-    return Math.ceil( (0.0 + this.total) / this.args.size);
+    return Math.ceil((0.0 + this.total) / this.args.size);
   }
 
   get previousPage() {
-    return this.isFirstPage
-      ? undefined
-      : this.humanPage - 1;
+    return this.isFirstPage ? undefined : this.humanPage - 1;
   }
 
   get nextPage() {
-    return this.isLastPage
-      ? undefined
-      : this.humanPage + 1;
+    return this.isLastPage ? undefined : this.humanPage + 1;
   }
 
   get isFirstPage() {
@@ -130,22 +161,23 @@ export default class NumberPaginationComponent extends Component {
     // note, you might want to use this.args.page instead, but given
     // that comes from the backend, it's *not* guaranteed to be
     // zero-based either.
-    if( this.args.itemsOnCurrentPage == 0 && this.isFirstPage )
+    if (this.args.itemsOnCurrentPage == 0 && this.isFirstPage)
       // human probably expects to see 0-0 when no items exist.
       return 0;
     else
-      return zeroToHumanBased(this.args.size * humanToZeroBased( this.humanPage ));
+      return zeroToHumanBased(
+        this.args.size * humanToZeroBased(this.humanPage),
+      );
   }
 
   get endIndex() {
     // this one is exactly the same number as humanPageOffset yet it has
     // a different meaning.  When summing up lists, it's effectively
     // removing one regardless of the offset.
-    if( this.args.itemsOnCurrentPage == 0 && this.isFirstPage )
+    if (this.args.itemsOnCurrentPage == 0 && this.isFirstPage)
       // human probably expects to see 0-0 when no items exist.
       return 0;
-    else
-      return this.startIndex - 1 + this.args.itemsOnCurrentPage;
+    else return this.startIndex - 1 + this.args.itemsOnCurrentPage;
   }
 
   get numberOfPages() {
@@ -158,7 +190,7 @@ export default class NumberPaginationComponent extends Component {
   get pageOptions() {
     return Array.from(
       new Array(this.numberOfPages),
-      (_val, index) => this.firstPage + index
+      (_val, index) => this.firstPage + index,
     );
   }
 
@@ -179,8 +211,12 @@ export default class NumberPaginationComponent extends Component {
         const x = this.firstPage;
         const leftWindow = [x, x + 1, x + 2].filter((i) => i <= this.lastPage);
         const y = this.lastPage;
-        const rightWindow = [y - 2, y - 1, y].filter((i) => i >= this.firstPage);
-        const pages = [...new Set([...leftWindow, ...rightWindow])].sort((a, b) => a - b);
+        const rightWindow = [y - 2, y - 1, y].filter(
+          (i) => i >= this.firstPage,
+        );
+        const pages = [...new Set([...leftWindow, ...rightWindow])].sort(
+          (a, b) => a - b,
+        );
         if (pages.length == 6 && pages[2] < pages[3] - 1) {
           return [...leftWindow, more, ...rightWindow];
         } else {
@@ -189,18 +225,24 @@ export default class NumberPaginationComponent extends Component {
       } else {
         const x = this.humanPage;
         const currentPageWindow = [x - 2, x - 1, x, x + 1, x + 2].filter(
-          (i) => i >= this.firstPage && i <= this.lastPage
+          (i) => i >= this.firstPage && i <= this.lastPage,
         );
         let prepend = [];
         let append = [];
         if (currentPageWindow.length) {
           const first = currentPageWindow[0];
           if (first > this.firstPage) {
-            prepend = first == this.firstPage + 1 ? [this.firstPage] : [this.firstPage, more];
+            prepend =
+              first == this.firstPage + 1
+                ? [this.firstPage]
+                : [this.firstPage, more];
           }
           const last = currentPageWindow[currentPageWindow.length - 1];
           if (last < this.lastPage) {
-            append = last == this.lastPage - 1 ? [this.lastPage] : [more, this.lastPage];
+            append =
+              last == this.lastPage - 1
+                ? [this.lastPage]
+                : [more, this.lastPage];
           }
         }
         return [...prepend, ...currentPageWindow, ...append];
@@ -211,12 +253,9 @@ export default class NumberPaginationComponent extends Component {
   }
 
   get total() {
-    if( this.args.total !== undefined )
-      return this.args.total;
-    else if( this.args.meta?.count !== undefined )
-      return this.args.meta.count;
-    else
-      return undefined;
+    if (this.args.total !== undefined) return this.args.total;
+    else if (this.args.meta?.count !== undefined) return this.args.meta.count;
+    else return undefined;
   }
 
   get hasTotal() {
@@ -238,32 +277,3 @@ export default class NumberPaginationComponent extends Component {
     this.args.updateSize(parseInt(size));
   }
 }
-
-{{!-- Used in: data-table.hbs --}}
-{{yield (hash
-    startIndex=this.startIndex
-    endIndex=this.endIndex
-    total=this.total
-    hasTotal=this.hasTotal
-    pageSize=@size
-    pageNumber=this.humanPage
-    numberOfPages=this.numberOfPages
-    pageOptions=this.pageOptions
-    summarizedPageOptions=this.summarizedPageOptions
-    sizeOptions=@sizeOptions
-    firstPage=this.firstPage
-    lastPage=this.lastPage
-    nextPage=this.nextPage
-    previousPage=this.previousPage
-    updatePage=this.updatePage
-    humanPage=this.humanPage
-    updateHumanPage=this.updateHumanPage
-    selectSizeOption=this.selectSizeOption
-    setSizeOption=this.setSizeOption
-    hasMultiplePages=this.hasMultiplePages
-    isFirstPage=this.isFirstPage
-    isLastPage=this.isLastPage
-    hasPreviousPage=this.hasPreviousPage
-    hasNextPage=this.hasNextPage
-    meta=@meta
-    backendPageOffset=this.backendPageOffset)}}

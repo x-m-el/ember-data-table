@@ -1,29 +1,27 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
-import hbs from 'htmlbars-inline-precompile';
+import RawDataTable from '../../../app/components/raw-data-table.js';
 
 module('Integration | Component | data table content', function (hooks) {
   setupRenderingTest(hooks);
 
   test('it renders', async function (assert) {
-    // Set any properties with this.set('myProperty', 'value');
-    // Handle any actions with this.on('myAction', function(val) { ... });
-
-    await render(hbs`<RawDataTable />`);
+    await render(<template><RawDataTable /></template>);
     assert
       .dom('table.data-table')
       .exists({ count: 1 }, 'displays 1 data table');
 
-
     // Template block usage:
-    await render(hbs`
-      <RawDataTable>
-        <:content>
-          template block text
-        </:content>
-      </RawDataTable>
-    `);
+    await render(
+      <template>
+        <RawDataTable>
+          <:content>
+            template block text
+          </:content>
+        </RawDataTable>
+      </template>,
+    );
 
     assert.dom('*').includesText('template block text');
   });
