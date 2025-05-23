@@ -1,6 +1,5 @@
 import { hash } from '@ember/helper';
 
-hash();
 /* Used in: data-table/data-table-menu */
 <template>
   {{yield

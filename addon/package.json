@@ -1,7 +1,7 @@
 {
   "name": "ember-data-table",
-  "version": "3.0.0",
-  "description": "Data tables for Ember following Google Design specs",
+  "version": "2.0.1",
+  "description": "Dta tables for Ember following Google Design specs",
   "keywords": [
     "ember-addon",
     "mu-semtech"
@@ -18,8 +18,9 @@
   },
   "dependencies": {
     "@embroider/addon-shim": "^1.8.7",
+    "decorator-transforms": "^2.2.2",
     "ember-math-helpers": "^2.18.0",
-    "ember-truth-helpers": "^3.0.0",
+    "ember-truth-helpers": "^4.0.3",
     "lodash.upperfirst": "^4.3.1"
   },
   "engines": {
@@ -46,7 +47,8 @@
       "./components/data-table/row.js": "./dist/_app_/components/data-table/row.js",
       "./components/data-table/text-search.js": "./dist/_app_/components/data-table/text-search.js",
       "./components/data-table/th-sortable.js": "./dist/_app_/components/data-table/th-sortable.js",
-      "./components/raw-data-table.js": "./dist/_app_/components/raw-data-table.js"
+      "./components/raw-data-table.js": "./dist/_app_/components/raw-data-table.js",
+      "./helpers/includes-by.js": "./dist/_app_/helpers/includes-by.js"
     },
     "app-styles": {
       "./styles/ember-data-table.scss": "./dist/styles/ember-data-table.scss"
@@ -71,14 +73,14 @@
     "eslint-plugin-qunit": "^8.1.2",
     "prettier": "^3.3.3",
     "rollup": "^4.41.0",
+    "rollup-plugin-scss": "^4.0.1",
     "stylelint": "^15.11.0",
     "stylelint-config-standard": "^34.0.0",
     "stylelint-prettier": "^4.1.0"
   },
   "exports": {
     ".": "./dist/index.js",
-    "./*": "./dist/*",
-    "./test-support": "./dist/test-support/index.js",
+    "./*": "./dist/*.js",
     "./addon-main.js": "./addon-main.js"
   },
   "files": [
@@ -87,7 +89,12 @@
   ],
   "scripts": {
     "build": "rollup --config",
-    "prepublishOnly": "rollup --config",
-    "start": "rollup --config --watch"
+    "lint": "concurrently 'npm:lint:*(!fix)' --names 'lint:'",
+    "lint:fix": "concurrently 'npm:lint:*:fix' --names 'fix:'",
+    "lint:js": "eslint . --cache",
+    "lint:js:fix": "eslint . --fix",
+    "lint:types": "glint --declaration",
+    "prepack": "rollup --config",
+    "start": "rollup --config --watch --environment development"
   }
 }

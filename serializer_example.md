@@ -1,3 +1,5 @@
+Code for a serializer to support page meta that ember-data-table understands.
+```js
 import JSONAPISerializer from '@ember-data/serializer/json-api';
 
 /**
@@ -99,3 +101,4 @@ export default class ApplicationSerializer extends JSONAPISerializer {
     return super.normalizeQueryResponse(...arguments);
   }
 }
+```

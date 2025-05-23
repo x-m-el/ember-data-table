@@ -7,6 +7,14 @@ module.exports = function (defaults) {
     'ember-cli-babel': {
       includePolyfill: true,
     },
+    // sassOptions: {
+    //   includePaths: ['node_modules/ember-data-table/dist/styles']
+    // },
+    minifyCSS: {
+      options: {
+        advanced: false,
+      },
+    },
   });
 
   const { maybeEmbroider } = require('@embroider/test-setup');

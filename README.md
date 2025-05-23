@@ -112,7 +112,7 @@ Visiting `http://localhost:4200/products` will now show the Raw Data Table.
 
 If the backend does not provide pagination details in `@model.meta` or total items in `@model.meta.count`, the total can be provided via `@total` to get working pagination buttons.
 
-See [serializer](/addon/serializer.js) for a serializer to use or use as inspiration to correctly parse meta information for pagination. 
+See [serializer_example](/serializer_example.md) for a serializer to use or use as inspiration to correctly parse meta information for pagination. 
 
 ## How-to guides
 
