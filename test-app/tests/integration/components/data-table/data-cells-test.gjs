@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
-import DataCells from '../../../../app/components/data-table/data-cells.gjs';
+import DataCells from 'ember-data-table/components/data-table/data-cells';
 
 module('Integration | Component | data-table/data-cells', function (hooks) {
   setupRenderingTest(hooks);

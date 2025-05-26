@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
-import RawDataTable from '../../../app/components/raw-data-table.gjs';
+import RawDataTable from 'ember-data-table/components/raw-data-table';
 
 module('Integration | Component | number pagination', function (hooks) {
   setupRenderingTest(hooks);

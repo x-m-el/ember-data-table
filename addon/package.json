@@ -1,7 +1,7 @@
 {
   "name": "ember-data-table",
   "version": "2.0.1",
-  "description": "Dta tables for Ember following Google Design specs",
+  "description": "Data tables for Ember following Google Design specs",
   "keywords": [
     "ember-addon",
     "mu-semtech"
@@ -65,7 +65,7 @@
     "@embroider/addon-dev": "^8.0.1",
     "@rollup/plugin-babel": "^6.0.4",
     "ember-template-lint": "^6.0.0",
-    "eslint": "^8.57.1",
+    "eslint": "^9.25.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-ember": "^12.2.1",
     "eslint-plugin-n": "^16.6.2",
@@ -76,7 +76,11 @@
     "rollup-plugin-scss": "^4.0.1",
     "stylelint": "^15.11.0",
     "stylelint-config-standard": "^34.0.0",
-    "stylelint-prettier": "^4.1.0"
+    "stylelint-prettier": "^4.1.0",
+    "@glint/core": "^1.5.2",
+    "@glint/environment-ember-loose": "^1.5.2",
+    "@glint/environment-ember-template-imports": "^1.5.2",
+    "@glint/template": "^1.5.2"
   },
   "exports": {
     ".": "./dist/index.js",
