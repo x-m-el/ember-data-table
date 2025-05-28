@@ -40,7 +40,11 @@ export default {
     ]),
 
     scss({
-      fileName: 'styles/ember-data-table.css',
+      fileName: 'styles/ember-data-table.scss',
+      outputStyle: 'expanded',
+      sourceMap: false,
+      failOnError: true,
+      includePaths: ['src/styles'],
     }),
 
     // Follow the V2 Addon rules about dependencies. Your code can import from
@@ -74,7 +78,7 @@ export default {
 
     // addons are allowed to contain imports of .css files, which we want rollup
     // to leave alone and keep in the published output.
-    addon.keepAssets(["**/*.css", "**/*.scss"]),
+    addon.keepAssets(["**/*.css"]),
 
     // Remove leftover build artifacts when starting a new build.
     addon.clean(),
