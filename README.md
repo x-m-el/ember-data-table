@@ -641,4 +641,4 @@ Various named blocks are offered, check your Ember Data Table design implementat
     calculated or guessed).
 
 ## Development
-There is a [dummy app](/addon/tests/dummy/app) for example configurations to test changes. The dummy app can be run via `npm start`.
+There is a [testing app](/test-app/app) for example configurations to test changes. The dummy app can be run via `npm start`. When running [the addon](/addon) with `npm start`, the test-app will automatically rebuild if the addon gets rebuild. This way you can develop the addon in tandem with testing it via the test-app.
