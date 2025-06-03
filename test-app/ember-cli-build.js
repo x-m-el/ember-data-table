@@ -1,5 +1,5 @@
 'use strict';
-
+const sideWatch = require('@embroider/broccoli-side-watch');
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
 module.exports = function (defaults) {
@@ -17,6 +17,13 @@ module.exports = function (defaults) {
       options: {
         advanced: false,
       },
+    },
+    trees: {
+      // automatically watch the addon when running the test-app, so it gets rebuilt when the addon code is updated
+      app: sideWatch('app', { watching: [
+        'ember-data-table', // this will resolve the package by name and watch all its importable code
+
+        ] }),
     },
   });
 
