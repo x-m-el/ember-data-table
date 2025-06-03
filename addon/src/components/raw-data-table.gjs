@@ -29,6 +29,7 @@ export default <template>
     @content={{@content}}
     @fields={{@fields}}
     @autoSearch={{@autoSearch}}
+    @searchPlaceholder={{@searchPlaceholder}}
     @page={{@page}}
     @size={{@size}}
     @sizes={{@sizes}}

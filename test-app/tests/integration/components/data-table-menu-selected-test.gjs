@@ -20,23 +20,19 @@ module('Integration | Component | data table menu selected', function (hooks) {
   });
 
   test('it renders selection count in raw-data-table', async function (assert) {
-    const self = this;
-
     const john = { firstName: 'John', lastName: 'Doe', age: 20 };
     const jane = { firstName: 'Jane', lastName: 'Doe', age: 21 };
     const content = [john, jane];
     const fields = ['firstName', 'lastName', 'age'];
+    const selection = [john];
 
-    this.set('content', content);
-    this.set('fields', fields);
-    this.set('selection', [john]);
     await render(
       <template>
         <RawDataTable
-          @content={{self.content}}
-          @fields={{self.fields}}
+          @content={{content}}
+          @fields={{fields}}
           @enableSelection={{true}}
-          @initialSelection={{self.selection}}
+          @initialSelection={{selection}}
         />
       </template>,
     );
@@ -44,14 +40,14 @@ module('Integration | Component | data table menu selected', function (hooks) {
       .dom('.data-table-menu .item-count')
       .hasText('1 item(s) selected', 'item count 1');
 
-    this.set('selection', [john, jane]);
+    const selection2 = [john, jane];
     await render(
       <template>
         <RawDataTable
-          @content={{self.content}}
-          @fields={{self.fields}}
+          @content={{content}}
+          @fields={{fields}}
           @enableSelection={{true}}
-          @initialSelection={{self.selection}}
+          @initialSelection={{selection2}}
         />
       </template>,
     );
@@ -61,23 +57,19 @@ module('Integration | Component | data table menu selected', function (hooks) {
   });
 
   test('calls clearSelection on cancel button click', async function (assert) {
-    const self = this;
-
     const john = { firstName: 'John', lastName: 'Doe', age: 20 };
     const jane = { firstName: 'Jane', lastName: 'Doe', age: 21 };
     const content = [john, jane];
     const fields = ['firstName', 'lastName', 'age'];
+    const selection = [john];
 
-    this.set('content', content);
-    this.set('fields', fields);
-    this.set('selection', [john]);
     await render(
       <template>
         <RawDataTable
-          @content={{self.content}}
-          @fields={{self.fields}}
+          @content={{content}}
+          @fields={{fields}}
           @enableSelection={{true}}
-          @initialSelection={{self.selection}}
+          @initialSelection={{selection}}
         />
       </template>,
     );
@@ -87,24 +79,21 @@ module('Integration | Component | data table menu selected', function (hooks) {
     await click('.data-table-menu button');
     assert.dom('.data-table-menu .item-count').doesNotExist();
   });
-  test('renders actions in selection-menu-actions block', async function (assert) {
-    const self = this;
 
+  test('renders actions in selection-menu-actions block', async function (assert) {
     const john = { firstName: 'John', lastName: 'Doe', age: 20 };
     const jane = { firstName: 'Jane', lastName: 'Doe', age: 21 };
     const content = [john, jane];
     const fields = ['firstName', 'lastName', 'age'];
+    const selection = [john];
 
-    this.set('content', content);
-    this.set('fields', fields);
-    this.set('selection', [john]);
     await render(
       <template>
         <RawDataTable
-          @content={{self.content}}
-          @fields={{self.fields}}
+          @content={{content}}
+          @fields={{fields}}
           @enableSelection={{true}}
-          @initialSelection={{self.selection}}
+          @initialSelection={{selection}}
         >
           <:selection-menu-actions>
             template block text

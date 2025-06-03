@@ -24,10 +24,8 @@ module('Integration | Component | data table content header', function (hooks) {
   });
 
   test('display column headers', async function (assert) {
-    const self = this;
-
-    this.set('fields', ['firstName', 'lastName', 'age']);
-    await render(<template><RawDataTable @fields={{self.fields}} /></template>);
+    const fields = ['firstName', 'lastName', 'age'];
+    await render(<template><RawDataTable @fields={{fields}} /></template>);
     assert.dom('thead tr').exists({ count: 1 }, 'displays 1 header row');
     assert.dom('thead tr th').exists({ count: 3 }, 'displays 3 column headers');
     assert
@@ -42,12 +40,10 @@ module('Integration | Component | data table content header', function (hooks) {
   });
 
   test('add selection column header if enabled', async function (assert) {
-    const self = this;
-
-    this.set('fields', ['firstName', 'lastName', 'age']);
+    const fields = ['firstName', 'lastName', 'age'];
     await render(
       <template>
-        <RawDataTable @fields={{self.fields}} @enableSelection={{true}} />
+        <RawDataTable @fields={{fields}} @enableSelection={{true}} />
       </template>,
     );
     assert.dom('thead tr').exists({ count: 1 }, 'displays 1 header row');
@@ -58,12 +54,10 @@ module('Integration | Component | data table content header', function (hooks) {
   });
 
   test('add line number column header if enabled', async function (assert) {
-    const self = this;
-
-    this.set('fields', ['firstName', 'lastName', 'age']);
+    const fields = ['firstName', 'lastName', 'age'];
     await render(
       <template>
-        <RawDataTable @fields={{self.fields}} @enableLineNumbers={{true}} />
+        <RawDataTable @fields={{fields}} @enableLineNumbers={{true}} />
       </template>,
     );
     assert.dom('thead tr').exists({ count: 1 }, 'displays 1 header row');
@@ -71,5 +65,24 @@ module('Integration | Component | data table content header', function (hooks) {
     assert
       .dom('thead tr th:first-child')
       .hasText('', 'displays line number as first header');
+  });
+
+  test('display custom column headers', async function (assert) {
+    const fields = ['firstName', 'lastName:Last_Name', 'age:Some__Age', {attribute: "birthday", label: "birth:__:day"}];
+    await render(<template><RawDataTable @fields={{fields}} /></template>);
+    assert.dom('thead tr').exists({ count: 1 }, 'displays 1 header row');
+    assert.dom('thead tr th').exists({ count: 4 }, 'displays 4 column headers');
+    assert
+      .dom('thead tr th:first-child')
+      .hasText('firstName', 'displays firstName as first header');
+    assert
+      .dom('thead tr th:nth-child(2)')
+      .hasText('Last Name', 'displays lastName as second column header');
+    assert
+      .dom('thead tr th:nth-child(3)')
+      .hasText('Some_Age', 'displays age as third column header');
+    assert
+      .dom('thead tr th:nth-child(4)')
+      .hasText('birth:__:day', 'displays age as third column header');
   });
 });

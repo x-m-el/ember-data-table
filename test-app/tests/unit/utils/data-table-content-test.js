@@ -11,8 +11,6 @@ module('Unit | Utils | string-specification-helpers', function() {
     ["one__two_three", "one_two three"],
     ["__hello__", "_hello_"]];
 
-    assert.expect(checks.length);
-
     checks.forEach(([input, output]) => {
       assert.strictEqual(deUnderscoreString(input), output);
     });
@@ -73,8 +71,6 @@ module('Unit | Utils | string-specification-helpers', function() {
           rawLabel: "Hello World",
           rawIcon: "add-icon-thing"
         }]];
-
-    assert.expect(checks.length);
 
     checks.forEach(([input, output]) => assert.deepEqual(convertDefinition(input), output));
   });

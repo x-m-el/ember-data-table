@@ -39,4 +39,17 @@ function setupTest(hooks, options) {
   // Additional setup for unit tests can be done here.
 }
 
-export { setupApplicationTest, setupRenderingTest, setupTest };
+function generatePaginationMeta(page, size, count) {
+  const pages = Math.floor(count / size);
+  return {
+    count: count,
+    pagination: {
+      first: { number: 0, size: size },
+      prev: { number: Math.max(0, page - 1), size: size },
+      next: { number: Math.min(page + 1, pages), size: size },
+      last: { number: pages },
+    },
+  };
+}
+
+export { setupApplicationTest, setupRenderingTest, setupTest, generatePaginationMeta };

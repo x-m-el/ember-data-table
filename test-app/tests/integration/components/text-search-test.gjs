@@ -8,14 +8,10 @@ module('Integration | Component | text search', function (hooks) {
   setupRenderingTest(hooks);
 
   test('it renders by default', async function (assert) {
-    const self = this;
-
-    this.set('filter', '');
     await render(
       <template>
         <RawDataTable
-          @filter={{self.filter}}
-          @updateFilter={{fn (mut self.filter)}}
+          @filter=""
         />
       </template>,
     );
@@ -28,18 +24,24 @@ module('Integration | Component | text search', function (hooks) {
   });
 
   test('it does not render if enableSearch is false', async function (assert) {
-    const self = this;
-
-    this.set('filter', '');
     await render(
       <template>
         <RawDataTable
           @enableSearch={{false}}
-          @filter={{self.filter}}
-          @updateFilter={{fn (mut self.filter)}}
+          @filter=""
         />
       </template>,
     );
     assert.dom('.raw-data-table .data-table-search').doesNotExist();
+  });
+
+  test('@searchPlaceholder text is rendered', async function (assert) {
+    const searchPlaceholder = 'Search Placeholder Text';
+    await render(
+      <template>
+        <RawDataTable @searchPlaceholder={{searchPlaceholder}} @filter="" />
+      </template>,
+    );
+    assert.dom('.raw-data-table .data-table-search input').hasAttribute('placeholder', searchPlaceholder, 'renders @searchPlaceholder');
   });
 });

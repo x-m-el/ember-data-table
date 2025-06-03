@@ -1,25 +1,23 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { click, render } from '@ember/test-helpers';
+import { click, pauseTest, render } from '@ember/test-helpers';
 import RawDataTable from 'ember-data-table/components/raw-data-table';
+import { or } from 'ember-truth-helpers';
+import { LinkTo } from '@ember/routing';
 
 module('Integration | Component | data table content body', function (hooks) {
   setupRenderingTest(hooks);
 
   test('display rows', async function (assert) {
-    const self = this;
-
     const content = [
       { firstName: 'John', lastName: 'Doe', age: 20 },
       { firstName: 'Jane', lastName: 'Doe', age: 21 },
     ];
     const fields = ['firstName', 'lastName', 'age'];
 
-    this.set('content', content);
-    this.set('fields', fields);
     await render(
       <template>
-        <RawDataTable @content={{self.content}} @fields={{self.fields}} />
+        <RawDataTable @content={{content}} @fields={{fields}} />
       </template>,
     );
 
@@ -39,24 +37,19 @@ module('Integration | Component | data table content body', function (hooks) {
   });
 
   test('add checkboxes for selection if enabled and allow initial selection', async function (assert) {
-    const self = this;
-
     const john = { firstName: 'John', lastName: 'Doe', age: 20 };
     const jane = { firstName: 'Jane', lastName: 'Doe', age: 21 };
     const jeff = { firstName: 'Jeff', lastName: 'Doe', age: 22 };
     const content = [john, jane, jeff];
     const fields = ['firstName', 'lastName', 'age'];
-    const selection = [jane];
+    const initialSelection = [jane];
 
-    this.set('content', content);
-    this.set('fields', fields);
-    this.set('initialSelection', selection);
     await render(
       <template>
         <RawDataTable
-          @content={{self.content}}
-          @fields={{self.fields}}
-          @initialSelection={{self.initialSelection}}
+          @content={{content}}
+          @fields={{fields}}
+          @initialSelection={{initialSelection}}
           @enableSelection={{true}}
         />
       </template>,
@@ -77,8 +70,6 @@ module('Integration | Component | data table content body', function (hooks) {
   });
 
   test('toggles selection if checkbox is clicked', async function (assert) {
-    const self = this;
-
     const john = { firstName: 'John', lastName: 'Doe', age: 20 };
     const jane = { firstName: 'Jane', lastName: 'Doe', age: 21 };
     const jeff = { firstName: 'Jeff', lastName: 'Doe', age: 22 };
@@ -86,16 +77,13 @@ module('Integration | Component | data table content body', function (hooks) {
     const fields = ['firstName', 'lastName', 'age'];
     const selection = [jane];
 
-    this.set('content', content);
-    this.set('fields', fields);
-    this.set('selection', selection);
     await render(
       <template>
         <RawDataTable
-          @content={{self.content}}
-          @fields={{self.fields}}
+          @content={{content}}
+          @fields={{fields}}
           @enableSelection={{true}}
-          @initialSelection={{self.selection}}
+          @initialSelection={{selection}}
         />
       </template>,
     );
@@ -110,21 +98,17 @@ module('Integration | Component | data table content body', function (hooks) {
   });
 
   test('add line numbers if enabled', async function (assert) {
-    const self = this;
-
     const john = { firstName: 'John', lastName: 'Doe', age: 20 };
     const jane = { firstName: 'Jane', lastName: 'Doe', age: 21 };
     const jeff = { firstName: 'Jeff', lastName: 'Doe', age: 22 };
     const content = [john, jane, jeff];
     const fields = ['firstName', 'lastName', 'age'];
 
-    this.set('content', content);
-    this.set('fields', fields);
     await render(
       <template>
         <RawDataTable
-          @content={{self.content}}
-          @fields={{self.fields}}
+          @content={{content}}
+          @fields={{fields}}
           @enableLineNumbers={{true}}
         />
       </template>,
@@ -143,16 +127,16 @@ module('Integration | Component | data table content body', function (hooks) {
       .dom('tbody>tr:nth-child(3) td:first-child')
       .hasText('3', 'displays offset 3 on the third row');
 
-    this.set('page', 2);
-    this.set('size', 5);
+    const page = 2;
+    const size = 5;
     await render(
       <template>
         <RawDataTable
-          @content={{self.content}}
-          @fields={{self.fields}}
+          @content={{content}}
+          @fields={{fields}}
           @enableLineNumbers={{true}}
-          @page={{self.page}}
-          @size={{self.size}}
+          @page={{page}}
+          @size={{size}}
         />
       </template>,
     );
@@ -172,21 +156,17 @@ module('Integration | Component | data table content body', function (hooks) {
   });
 
   test('displays no data message if there is no data', async function (assert) {
-    const self = this;
-
     const noDataMessage = 'No data';
     const dataTable = {
       parsedFields: ['firstName', 'lastName', 'age'],
       selection: [],
     };
 
-    this.set('noDataMessage', noDataMessage);
-    this.set('dataTable', dataTable);
     await render(
       <template>
         <RawDataTable
-          @noDataMessage={{self.noDataMessage}}
-          @dataTable={{self.dataTable}}
+          @noDataMessage={{noDataMessage}}
+          @dataTable={{dataTable}}
         />
       </template>,
     );
@@ -198,15 +178,12 @@ module('Integration | Component | data table content body', function (hooks) {
       .hasText('No data', 'displays message "No data" if no content');
 
     const emptyContent = [];
-    this.set('emptyContent', emptyContent);
-    this.set('noDataMessage', noDataMessage);
-    this.set('dataTable', dataTable);
     await render(
       <template>
         <RawDataTable
-          @content={{self.emptyContent}}
-          @noDataMessage={{self.noDataMessage}}
-          @dataTable={{self.dataTable}}
+          @content={{emptyContent}}
+          @noDataMessage={{noDataMessage}}
+          @dataTable={{dataTable}}
         />
       </template>,
     );
@@ -218,20 +195,158 @@ module('Integration | Component | data table content body', function (hooks) {
       .hasText('No data', 'displays message "No data" if empty content');
 
     const content = ['foo', 'bar'];
-    this.set('content', content);
-    this.set('noDataMessage', noDataMessage);
-    this.set('dataTable', dataTable);
     await render(
       <template>
         <RawDataTable
-          @content={{self.content}}
-          @noDataMessage={{self.noDataMessage}}
-          @dataTable={{self.dataTable}}
+          @content={{content}}
+          @noDataMessage={{noDataMessage}}
+          @dataTable={{dataTable}}
         />
       </template>,
     );
     assert
       .dom('td.no-data-message')
       .doesNotExist('displays no message when there is content');
+  });
+
+  test('@links property adds a links to every column', async function (assert) {
+    const links = [
+        'edit',
+        'edit:Edit_Link',
+        'edit:Edit_Link:icon-reference',
+        { route: 'edit'},
+        { route: 'edit', label: 'Edit:Link' },
+        { route: 'edit', label: 'Edit:Link', icon: 'icon:reference' },
+    ];
+
+    const content = [{ id: 1, name: 'John Doe' }, { id: 2, name: 'Jane Doe' }];
+
+    await render(
+      <template>
+        <RawDataTable @content={{content}} @fields="name" @links={{links}} />
+      </template>,
+    );
+
+    assert.dom('tbody>tr:first-child td a:first-child').hasText('edit', 'string config: renders edit link');
+    assert.dom('tbody>tr:first-child td a:nth-child(2)').hasText('Edit Link', 'string config: renders edit link with label');
+    assert.dom('tbody>tr:first-child td a:nth-child(3)').hasText('Edit Link', 'string config: renders icon edit link with label');
+    assert.dom('tbody>tr:first-child td a:nth-child(4)').hasText('edit', 'object config: renders edit link');
+    assert.dom('tbody>tr:first-child td a:nth-child(5)').hasText('Edit:Link', 'object config: renders edit link with label');
+    assert.dom('tbody>tr:first-child td a:nth-child(6)').hasText('Edit:Link', 'object config: renders icon edit link with label');
+
+    assert.dom('tbody>tr:nth-child(2) td a:first-child').hasText('edit', 'string config: renders edit link');
+    assert.dom('tbody>tr:nth-child(2) td a:nth-child(2)').hasText('Edit Link', 'string config: renders edit link with label');
+    assert.dom('tbody>tr:nth-child(2) td a:nth-child(3)').hasText('Edit Link', 'string config: renders icon edit link with label');
+    assert.dom('tbody>tr:nth-child(2) td a:nth-child(4)').hasText('edit', 'object config: renders edit link');
+    assert.dom('tbody>tr:nth-child(2) td a:nth-child(5)').hasText('Edit:Link', 'object config: renders edit link with label');
+    assert.dom('tbody>tr:nth-child(2) td a:nth-child(6)').hasText('Edit:Link', 'object config: renders icon edit link with label');
+  });
+
+  test('@links property data is provided for :actions: block', async function (assert) {
+    const links = [
+        'edit',
+        'edit:Edit_Link',
+        'edit:Edit_Link:icon-reference',
+        { route: 'edit'},
+        { route: 'edit', label: 'Edit:Link' },
+        { route: 'edit', label: 'Edit:Link', icon: 'icon:reference' },
+    ];
+
+    const content = [{ id: 1, name: 'John Doe' }, { id: 2, name: 'Jane Doe' }];
+
+    await render(
+      <template>
+        <RawDataTable @content={{content}} @fields="name" @links={{links}}>
+          <:actions as |row|>
+            <td>
+              test
+              {{#each row.linkedRoutes as |linkedRoute| }}
+                {{linkedRoute.route}}
+                <LinkTo
+                  @route={{linkedRoute.route}}
+                  @model={{linkedRoute.model}}
+                >
+                  model: {{linkedRoute.model}}
+                  {{#if linkedRoute.icon}} icon: {{linkedRoute.icon}} {{/if}}
+                  {{!-- this is the same logic as raw-data-table --}}
+                  {{or
+                    linkedRoute.label
+                    linkedRoute.route
+                  }}
+                </LinkTo>
+              {{/each}}
+            </td>
+          </:actions>
+        </RawDataTable>
+      </template>
+    );
+
+    assert.dom('tbody>tr:first-child td a:first-child').hasText('model: 1 edit', 'string config: renders edit link');
+    assert.dom('tbody>tr:first-child td a:nth-child(2)').hasText('model: 1 Edit Link', 'string config: renders edit link with label');
+    assert.dom('tbody>tr:first-child td a:nth-child(3)').hasText('model: 1 icon: icon-reference Edit Link', 'string config: renders icon edit link with label');
+    assert.dom('tbody>tr:first-child td a:nth-child(4)').hasText('model: 1 edit', 'object config: renders edit link');
+    assert.dom('tbody>tr:first-child td a:nth-child(5)').hasText('model: 1 Edit:Link', 'object config: renders edit link with label');
+    assert.dom('tbody>tr:first-child td a:nth-child(6)').hasText('model: 1 icon: icon:reference Edit:Link', 'object config: renders icon edit link with label');
+
+    assert.dom('tbody>tr:nth-child(2) td a:first-child').hasText('model: 2 edit', '2nd column: string config: renders edit link');
+    assert.dom('tbody>tr:nth-child(2) td a:nth-child(2)').hasText('model: 2 Edit Link', '2nd column: string config: renders edit link with label');
+    assert.dom('tbody>tr:nth-child(2) td a:nth-child(3)').hasText('model: 2 icon: icon-reference Edit Link', '2nd column: string config: renders icon edit link with label');
+    assert.dom('tbody>tr:nth-child(2) td a:nth-child(4)').hasText('model: 2 edit', '2nd column: object config: renders edit link');
+    assert.dom('tbody>tr:nth-child(2) td a:nth-child(5)').hasText('model: 2 Edit:Link', '2nd column: object config: renders edit link with label');
+    assert.dom('tbody>tr:nth-child(2) td a:nth-child(6)').hasText('model: 2 icon: icon:reference Edit:Link', '2nd column: object config: renders icon edit link with label');
+  });
+
+  test('@linksModelProperty adds model to the link', async function (assert) {
+    const links = [
+        'edit',
+        'edit:Edit_Link',
+        'edit:Edit_Link:icon-reference',
+        { route: 'edit'},
+        { route: 'edit', label: 'Edit:Link' },
+        { route: 'edit', label: 'Edit:Link', icon: 'icon:reference' },
+    ];
+
+    const content = [{ id: 1, name: 'John' }, { id: 2, name: 'Jane' }];
+
+    await render(
+      <template>
+        <RawDataTable @content={{content}} @fields="name" @links={{links}} @linksModelProperty="name">
+          <:actions as |row|>
+            <td>
+              test
+              {{#each row.linkedRoutes as |linkedRoute| }}
+                {{linkedRoute.route}}
+                <LinkTo
+                  @route={{linkedRoute.route}}
+                  @model={{linkedRoute.model}}
+                >
+                  model: {{linkedRoute.model}}
+                  {{#if linkedRoute.icon}} icon: {{linkedRoute.icon}} {{/if}}
+                  {{!-- this is the same logic as raw-data-table --}}
+                  {{or
+                    linkedRoute.label
+                    linkedRoute.route
+                  }}
+                </LinkTo>
+              {{/each}}
+            </td>
+          </:actions>
+        </RawDataTable>
+      </template>
+    );
+
+    assert.dom('tbody>tr:first-child td a:first-child').hasText('model: John edit', 'string config: renders edit link');
+    assert.dom('tbody>tr:first-child td a:nth-child(2)').hasText('model: John Edit Link', 'string config: renders edit link with label');
+    assert.dom('tbody>tr:first-child td a:nth-child(3)').hasText('model: John icon: icon-reference Edit Link', 'string config: renders icon edit link with label');
+    assert.dom('tbody>tr:first-child td a:nth-child(4)').hasText('model: John edit', 'object config: renders edit link');
+    assert.dom('tbody>tr:first-child td a:nth-child(5)').hasText('model: John Edit:Link', 'object config: renders edit link with label');
+    assert.dom('tbody>tr:first-child td a:nth-child(6)').hasText('model: John icon: icon:reference Edit:Link', 'object config: renders icon edit link with label');
+
+    assert.dom('tbody>tr:nth-child(2) td a:first-child').hasText('model: Jane edit', '2nd column: string config: renders edit link');
+    assert.dom('tbody>tr:nth-child(2) td a:nth-child(2)').hasText('model: Jane Edit Link', '2nd column: string config: renders edit link with label');
+    assert.dom('tbody>tr:nth-child(2) td a:nth-child(3)').hasText('model: Jane icon: icon-reference Edit Link', '2nd column: string config: renders icon edit link with label');
+    assert.dom('tbody>tr:nth-child(2) td a:nth-child(4)').hasText('model: Jane edit', '2nd column: object config: renders edit link');
+    assert.dom('tbody>tr:nth-child(2) td a:nth-child(5)').hasText('model: Jane Edit:Link', '2nd column: object config: renders edit link with label');
+    assert.dom('tbody>tr:nth-child(2) td a:nth-child(6)').hasText('model: Jane icon: icon:reference Edit:Link', '2nd column: object config: renders icon edit link with label');
   });
 });

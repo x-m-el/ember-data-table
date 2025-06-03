@@ -14,12 +14,12 @@ import DataTableTextSearch from './data-table/text-search.gjs';
 import DataTableDataTableContent from './data-table/data-table-content.gjs';
 import DataTableNumberPagination from './data-table/number-pagination.gjs';
 import DataTableDataTableMenu from './data-table/data-table-menu.gjs';
+import { or } from 'ember-truth-helpers';
+import { assert } from '@ember/debug';
 
 const DEFAULT_DEBOUNCE_TIME = 2000;
 export default class DataTable extends Component {
   <template>
-    {{! TODO: supply both meta and @content.meta or supply @content.meta only when @meta is not supplied to be in line with readme }}
-
     {{yield
       (hash
         Search=(component
@@ -55,7 +55,7 @@ export default class DataTable extends Component {
           itemsOnCurrentPage=@content.length
           sizeOptions=this.sizeOptions
           total=@total
-          meta=@content.meta
+          meta=(or @meta @content.meta)
           updatePage=this.updatePage
           updateSize=this.updatePageSize
           backendPageOffset=@backendPageOffset
@@ -264,7 +264,7 @@ export default class DataTable extends Component {
   updatePageSize(size) {
     const updater = this.args.updatePageSize;
     if (!updater) {
-      console.error(
+      assert(
         `Could not update page size to ${size} because @updatePageSize was not supplied to data table`,
       );
     } else {
@@ -278,7 +278,7 @@ export default class DataTable extends Component {
     const updater = this.args.updateFilter;
 
     if (!updater) {
-      console.error(
+      assert(
         `Could not update filter to '${filter}' because @updateFilter was not supplied to data table`,
       );
     } else {
@@ -291,7 +291,7 @@ export default class DataTable extends Component {
   updateSort(sort) {
     const updater = this.args.updateSort;
     if (!updater) {
-      console.error(
+      assert(
         `Could not update sorting to '${sort}' because @updateSort was not supplied to data table`,
       );
     } else {
