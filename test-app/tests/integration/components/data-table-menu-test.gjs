@@ -2,6 +2,8 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import RawDataTable from 'ember-data-table/components/raw-data-table';
+import { tracked } from '@glimmer/tracking';
+import { renderSettled } from '@ember/renderer';
 
 module('Integration | Component | data table menu', function (hooks) {
   setupRenderingTest(hooks);
@@ -24,5 +26,22 @@ module('Integration | Component | data table menu', function (hooks) {
     );
 
     assert.dom('.raw-data-table').containsText('template block text');
+  });
+
+  test('can toggle menu with @showMenu', async function (assert) {
+    class testContext {
+      @tracked showMenu;
+    }
+    const context = new testContext();
+    context.showMenu = true;
+    await render(<template><RawDataTable @showMenu={{context.showMenu}} /></template>);
+
+    assert
+      .dom('.data-table-menu')
+      .exists({ count: 1 }, 'Menu container exists');
+
+    context.showMenu = false;
+    await renderSettled();
+    assert.dom('.data-table-menu').doesNotExist('Menu container does not exist');
   });
 });

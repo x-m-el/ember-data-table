@@ -2,7 +2,7 @@ import { action } from '@ember/object';
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 
-/* Used in: data-table/data-table-content-header */
+/* Used in: data-table/content-header */
 export default class ThSortableComponent extends Component {
   <template>
     {{yield
@@ -18,7 +18,7 @@ export default class ThSortableComponent extends Component {
         sortDirection=this.sortDirection
         renderCustomBlock=this.renderCustomBlock
         isCustom=this.isCustom
-        hasCustom=this.hasCustom
+        hasCustomHeaders=this.hasCustomHeaders
       )
     }}
   </template>
@@ -46,15 +46,7 @@ export default class ThSortableComponent extends Component {
   }
 
   get renderCustomBlock() {
-    // render the custom block when this header is custom or when a
-    // custom block was given and no specific headers were supplied to
-    // be custom.
-    //
-    // Note: data table can't make this decision because it doesn't know
-    // whether a custom block was supplied.
-    return (
-      this.args.hasCustomBlock && (this.isCustom || !this.hasCustomHeaders)
-    );
+    return this.args.hasCustomBlock && this.isCustom;
   }
 
   get isCustom() {

@@ -7,7 +7,7 @@ import add from 'ember-math-helpers/helpers/add';
 import includesBy from '../../helpers/includes-by.js';
 import DataTableDataCells from './data-cells.gjs';
 
-/* Used in: data-table/data-table-content-body */
+/* Used in: data-table/content-body */
 export default class DataTableRowComponent extends Component {
   <template>
     {{! @item and @index come from consumer's data-table.hbs implementation }}

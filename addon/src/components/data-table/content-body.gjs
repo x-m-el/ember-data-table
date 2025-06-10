@@ -1,11 +1,10 @@
-import { action } from '@ember/object';
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import and from 'ember-truth-helpers/helpers/and';
 import or from 'ember-truth-helpers/helpers/or';
 import DataTableRow from './row.gjs';
 
-/* Used in: data-table/data-table-content */
+/* Used in: data-table/content */
 export default class DataTableContentBodyComponent extends Component {
   <template>
     {{yield
@@ -53,8 +52,7 @@ export default class DataTableContentBodyComponent extends Component {
     return offset;
   }
 
-  @action
-  updateSelection(item, event) {
+  updateSelection = (item, event) => {
     if (event.target.checked) this.args.dataTable.addItemToSelection(item);
     else this.args.dataTable.removeItemFromSelection(item);
   }

@@ -31,6 +31,6 @@ export default class DataTableDataCellComponent extends Component {
   }
 
   get renderCustomBlock() {
-    return this.args.hasCustomBlock && (this.isCustom || !this.hasCustomFields);
+    return this.args.hasCustomBlock && this.isCustom;
   }
 }

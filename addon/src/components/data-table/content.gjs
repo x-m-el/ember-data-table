@@ -1,8 +1,8 @@
 import Component from '@glimmer/component';
 import { toComponentSpecifications } from '../../utils/string-specification-helpers';
 import { hash } from '@ember/helper';
-import DataTableDataTableContentHeader from './data-table-content-header.gjs';
-import DataTableDataTableContentBody from './data-table-content-body.gjs';
+import DataTableDataTableContentHeader from './content-header.gjs';
+import DataTableDataTableContentBody from './content-body.gjs';
 
 /* Used in: data-table.hbs */
 export default class DataTableContentComponent extends Component {

@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 
-/* Used in: data-table/data-table-menu */
+/* Used in: data-table/menu */
 export default class DataTableMenuSelectedComponent extends Component {
   <template>
     {{yield

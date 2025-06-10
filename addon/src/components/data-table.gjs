@@ -4,16 +4,16 @@ import { isEmpty } from '@ember/utils';
 import Component from '@glimmer/component';
 import { typeOf } from '@ember/utils';
 import {
-  toComponentSpecifications,
+  toComponentSpecification,
   definitionsToArray,
 } from '../utils/string-specification-helpers';
 import attributeToSortParams from '../utils/attribute-to-sort-params';
 import get from '../utils/get';
 import { hash } from '@ember/helper';
 import DataTableTextSearch from './data-table/text-search.gjs';
-import DataTableDataTableContent from './data-table/data-table-content.gjs';
+import DataTableDataTableContent from './data-table/content.gjs';
 import DataTableNumberPagination from './data-table/number-pagination.gjs';
-import DataTableDataTableMenu from './data-table/data-table-menu.gjs';
+import DataTableDataTableMenu from './data-table/menu.gjs';
 import { or } from 'ember-truth-helpers';
 import { assert } from '@ember/debug';
 
@@ -173,13 +173,6 @@ export default class DataTable extends Component {
       : this.args.rowLinkModelProperty;
   }
 
-  get fieldsWithMeta() {
-    return toComponentSpecifications(this.args.fields, [
-      { raw: 'attribute' },
-      { name: 'label', default: 'attribute' },
-    ]);
-  }
-
   attributeToSortParams(attribute) {
     if (this.args.attributeToSortParams) {
       return this.args.attributeToSortParams(attribute);
@@ -189,21 +182,40 @@ export default class DataTable extends Component {
   }
 
   get fields() {
-    return this.fieldsWithMeta.map(
+    // this.args.fields can be:
+    // - a string => split up to array, use component specification logic to get the meta object
+    // - an array => map every value depending on its type:
+    //        - if a string => use component specification logic
+    //        - if an object => use the object as is, override `attribute` and `label` with component specification logic
+    // this always passing all parameters to `@fields`
+    const fields = definitionsToArray(this.args.fields);
+    const fieldsWithMeta = fields.map(field => {
+      return {
+        ...(typeOf(field) === 'string' ? {} : field),
+        ...toComponentSpecification(field, [
+          { raw: 'attribute' },
+          { name: 'label', default: 'attribute' },
+        ]),
+      };
+    });
+
+    return fieldsWithMeta.map(
       ({
         attribute,
         label,
+        sortParameters,
         isSortable,
         hasCustomHeader,
         isCustom,
-        sortParameters,
+        customFieldComponent,
+        customHeaderComponent,
       }) => ({
         attribute,
         label,
         sortParameters:
           sortParameters || // custom format says it's sortable
           ((isSortable || // custom format says it's sortable
-            this.sortableFields === null || // default: all fields are sortable
+            this.sortableFields == null || // default: all fields are sortable
             this.sortableFields?.includes(attribute)) && // @sortableFields
             this.attributeToSortParams(attribute)),
         get isSortable() {
@@ -212,8 +224,8 @@ export default class DataTable extends Component {
         hasCustomHeader:
           hasCustomHeader || this.customHeaders.includes(attribute),
         isCustom: isCustom || this.customFields.includes(attribute),
-        customFieldComponent: this.customFieldComponents[attribute] || null,
-        customHeaderComponent: this.customHeaderComponents[attribute] || null,
+        customFieldComponent: customFieldComponent || this.customFieldComponents[attribute] || null,
+        customHeaderComponent: customHeaderComponent || this.customHeaderComponents[attribute] || null,
       }),
     );
   }

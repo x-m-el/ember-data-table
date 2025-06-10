@@ -5,6 +5,7 @@ import { concat, fn } from '@ember/helper';
 import or from 'ember-truth-helpers/helpers/or';
 import { LinkTo } from '@ember/routing';
 import eq from 'ember-truth-helpers/helpers/eq';
+import { and } from 'ember-truth-helpers';
 
 const ClickableRow = <template>
   {{#if @hasClickRowAction}}
@@ -170,15 +171,15 @@ export default <template>
                             @hasCustomBlock={{has-block 'data-header'}}
                             as |dataHeader|
                           >
-                            {{#if dataHeader.renderCustomBlock}}
-                              {{yield dataHeader to='data-header'}}
-                            {{else if dataHeader.customHeaderComponent}}
+                            {{#if field.customHeaderComponent}}
                               {{#let
-                                dataHeader.customHeaderComponent
+                                field.customHeaderComponent
                                 as |CustomComponent|
                               }}
                                 <CustomComponent @header={{dataHeader}} />
                               {{/let}}
+                            {{else if dataHeader.renderCustomBlock}}
+                              {{yield dataHeader to='data-header'}}
                             {{else}}
                               {{#if dataHeader.isSortable}}
                                 <th
@@ -241,7 +242,7 @@ export default <template>
                             {{else}}
                               <ClickableRow
                                 @hasClickRowAction={{row.hasClickRowAction}}
-                                @isSelected={{row.isSelected}}
+                                @isSelected={{and row.enableSelection row.isSelected}}
                                 @rowClicked={{row.rowClicked}}
                               >
                                 {{#if row.enableSelection}}

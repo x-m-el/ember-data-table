@@ -1,6 +1,6 @@
 import { hash } from '@ember/helper';
 import DataTableThSortable from './th-sortable.gjs';
-/* Used in: data-table/data-table-content */
+/* Used in: data-table/content */
 <template>
   {{yield
     (hash

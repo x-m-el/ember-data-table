@@ -260,6 +260,16 @@ The passing of data from route and controller, and moving data back up.
 How to show different things in Ember Data Table
 
 - `@fields` :: Array of objects/strings or space-separated string of fields to render (in given order) with extra options.  Each field can consists of two parts, split by a colon (`:`) for string syntax.  The first part is the attribute (key `attribute`, in string syntax `_` are rendered as spaces), the second an optional label (key `label`).  If no label is provided, the attribute is used as the label.  E.g.: `@fields="label:Name priceInEuros:Euro_price available"` or `@fields={{array "label:Name" (hash attribute="priceInEuros" label="Euro price") "available"}}`.
+Other keys can also be passed when using the object syntax. These take precedence over other configurations to set up visualization logic:
+    - `attribute`: mandatory attribute this configuration is meant for
+    - `label`: label for the attribute, used in the column heading
+    - `isSortable`: set to false if this field should not be sortable. Default is true. Setting `sortParameters` or `@sortableFields` will take precedence.
+    - `sortParameters`: directly pass the sorting parameters, same form as return value of `@attributeToSortParams`.
+    - `hasCustomHeader`: set to true to render this field header via the `:data-header` named block, like `@customHeaders`.
+    - `customHeaderComponent`: Pass a component to use for rendering this header, like `@customHeaders`.
+    - `isCustom`: set to true to render this field via the `:data-cell` named block, like `@customFields`.
+    - `customFieldComponent`: Pass a component to use for rendering this field's cells, like `@customFields`.
+          
 - `@sortableFields` :: Array or space-separated string of fields by which the user may sort.
   Fields should use the attribute names of `@fields`.  By default all fields are sortable.  Set to an empty list or empty string to disable sorting.
 - `@noDataMessage` :: Custom message to show when no data is available.
@@ -301,7 +311,7 @@ How to show different things in Ember Data Table
       {{else if (eq header.attribute "priceInEuros")}}
         <th><i>Here is my price!</i></th>
       {{/if}}
-    </data-header>
+    </:data-header>
   </RawDataTable>
   ```
 
@@ -560,8 +570,8 @@ Various named blocks are offered, check your Ember Data Table design implementat
   - `rowClicked` :: See above.
   - `DataCell` :: Contextual component which provides information for
     rendering an individual cell.  Should receive `@column` with the
-    field to render and `@hasCustomBlock` with `{{has-block
-    "data-cell"}}` so we know whether a custom block was provided for
+    field to render and `@hasCustomBlock` with `{{has-block "data-cell"}}` 
+    so we know whether a custom block was provided for
     the `data-cell` named slot.
 - `:data-cell` :: Renders a custom data cell regardless of whether it's
   first or any other.  Receives a hash containing:
