@@ -1,12 +1,14 @@
-import { module, test } from 'qunit';
-import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
-import RawDataTable from 'ember-data-table/components/raw-data-table';
 import { tracked } from '@glimmer/tracking';
 import { renderSettled } from '@ember/renderer';
+import { render } from '@ember/test-helpers';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+
+import RawDataTable from 'ember-data-table/components/raw-data-table';
 
 module('Integration | Component | data-table/data-cell', function (hooks) {
   setupRenderingTest(hooks);
+
   const onePerson = [{ firstName: 'John', lastName: 'Doe', age: 20 }];
   const allFields = ['firstName', 'lastName', 'age'];
 
@@ -14,8 +16,10 @@ module('Integration | Component | data-table/data-cell', function (hooks) {
     class Context {
       @tracked customFields;
     }
+
     const context = new Context();
-    context.customFields = "age notExisting"
+
+    context.customFields = 'age notExisting';
     await render(
       <template>
         <RawDataTable
@@ -52,14 +56,17 @@ module('Integration | Component | data-table/data-cell', function (hooks) {
         'only show @customFields custom blocks for fields also passed to @fields',
       );
 
-    context.customFields = "firstName";
+    context.customFields = 'firstName';
     await renderSettled();
     assert
       .dom('tbody>tr:first-child td')
       .exists({ count: 3 }, 'reactivity: displays 3 columns');
     assert
       .dom('tbody>tr:first-child td:first-child')
-      .hasText('firstName', 'reactivity: displays custom block in first column');
+      .hasText(
+        'firstName',
+        'reactivity: displays custom block in first column',
+      );
     assert
       .dom('tbody>tr:first-child td:nth-child(2)')
       .hasText('Doe', 'reactivity: displays lastName in second column');
@@ -68,21 +75,26 @@ module('Integration | Component | data-table/data-cell', function (hooks) {
       .hasText('20', 'reactivity: displays age in third column');
     assert
       .dom('tbody')
-      .doesNotIncludeText('John', 'reactivity: Only display custom block, not the firstName value');
+      .doesNotIncludeText(
+        'John',
+        'reactivity: Only display custom block, not the firstName value',
+      );
   });
 
   test('it renders custom fields as components', async function (assert) {
     class Context {
       @tracked customFields;
     }
+
     const context = new Context();
+
     context.customFields = {
       firstName: <template>
         <td>customComponent:{{@cell.attribute}}</td>
       </template>,
-      age: ""
-    }
-      await render(
+      age: '',
+    };
+    await render(
       <template>
         <RawDataTable
           @content={{onePerson}}
@@ -101,22 +113,19 @@ module('Integration | Component | data-table/data-cell', function (hooks) {
       .exists({ count: 3 }, 'displays 3 columns');
     assert
       .dom('tbody>tr:first-child td:first-child')
-      .hasText('customComponent:firstName', 'displays firstName custom block in first column');
+      .hasText(
+        'customComponent:firstName',
+        'displays firstName custom block in first column',
+      );
     assert
       .dom('tbody>tr:first-child td:nth-child(2)')
       .hasText('Doe', 'displays lastName in second column');
     assert
       .dom('tbody>tr:first-child td:nth-child(3)')
-      .hasText(
-        'custom:age',
-        'displays custom component in third column',
-      );
+      .hasText('custom:age', 'displays custom component in third column');
     assert
       .dom('tbody')
-      .doesNotIncludeText(
-        '20',
-        'Only display custom block, not the age value',
-      );
+      .doesNotIncludeText('20', 'Only display custom block, not the age value');
     assert
       .dom('tbody')
       .doesNotIncludeText(
@@ -128,15 +137,18 @@ module('Integration | Component | data-table/data-cell', function (hooks) {
       firstName: <template>
         <td>customComponentNew:{{@cell.attribute}}</td>
       </template>,
-      age: ""
+      age: '',
     };
     await renderSettled();
-   assert
+    assert
       .dom('tbody>tr:first-child td')
       .exists({ count: 3 }, 'reactivity: displays 3 columns');
     assert
       .dom('tbody>tr:first-child td:first-child')
-      .hasText('customComponentNew:firstName', 'reactivity: displays firstName custom block in first column');
+      .hasText(
+        'customComponentNew:firstName',
+        'reactivity: displays firstName custom block in first column',
+      );
     assert
       .dom('tbody>tr:first-child td:nth-child(2)')
       .hasText('Doe', 'reactivity: displays lastName in second column');

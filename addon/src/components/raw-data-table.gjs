@@ -1,11 +1,13 @@
-import DataTable from './data-table.gjs';
-import { on } from '@ember/modifier';
-import notEq from 'ember-truth-helpers/helpers/not-eq';
 import { concat, fn } from '@ember/helper';
-import or from 'ember-truth-helpers/helpers/or';
+import { on } from '@ember/modifier';
 import { LinkTo } from '@ember/routing';
-import eq from 'ember-truth-helpers/helpers/eq';
+
 import { and } from 'ember-truth-helpers';
+import eq from 'ember-truth-helpers/helpers/eq';
+import notEq from 'ember-truth-helpers/helpers/not-eq';
+import or from 'ember-truth-helpers/helpers/or';
+
+import DataTable from './data-table.gjs';
 
 const ClickableRow = <template>
   {{#if @hasClickRowAction}}

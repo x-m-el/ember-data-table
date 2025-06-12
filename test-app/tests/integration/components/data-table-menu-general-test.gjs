@@ -1,6 +1,7 @@
+import { render } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+
 import RawDataTable from 'ember-data-table/components/raw-data-table';
 
 module('Integration | Component | data table menu general', function (hooks) {
@@ -39,6 +40,7 @@ module('Integration | Component | data table menu general', function (hooks) {
 
     // Test with non-empty selection
     const initialSelection = [jane];
+
     await render(
       <template>
         <RawDataTable

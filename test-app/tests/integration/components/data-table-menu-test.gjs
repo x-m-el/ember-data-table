@@ -1,9 +1,10 @@
-import { module, test } from 'qunit';
-import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
-import RawDataTable from 'ember-data-table/components/raw-data-table';
 import { tracked } from '@glimmer/tracking';
 import { renderSettled } from '@ember/renderer';
+import { render } from '@ember/test-helpers';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+
+import RawDataTable from 'ember-data-table/components/raw-data-table';
 
 module('Integration | Component | data table menu', function (hooks) {
   setupRenderingTest(hooks);
@@ -32,9 +33,13 @@ module('Integration | Component | data table menu', function (hooks) {
     class testContext {
       @tracked showMenu;
     }
+
     const context = new testContext();
+
     context.showMenu = true;
-    await render(<template><RawDataTable @showMenu={{context.showMenu}} /></template>);
+    await render(
+      <template><RawDataTable @showMenu={{context.showMenu}} /></template>,
+    );
 
     assert
       .dom('.data-table-menu')
@@ -42,6 +47,8 @@ module('Integration | Component | data table menu', function (hooks) {
 
     context.showMenu = false;
     await renderSettled();
-    assert.dom('.data-table-menu').doesNotExist('Menu container does not exist');
+    assert
+      .dom('.data-table-menu')
+      .doesNotExist('Menu container does not exist');
   });
 });

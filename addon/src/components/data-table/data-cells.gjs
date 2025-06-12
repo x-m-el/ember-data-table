@@ -1,5 +1,6 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
+
 import DataTableDataCell from './data-cell.gjs';
 
 /* Used in: data-table/row */
@@ -34,6 +35,7 @@ export default class DataTableDataCellsComponent extends Component {
   get otherColumnFields() {
     if (this.args.fields?.length) {
       let [, ...fields] = this.args.fields;
+
       return fields;
     } else {
       return [];

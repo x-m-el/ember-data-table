@@ -20,6 +20,7 @@ export default class SimpleTablePojoRoute extends Route {
         size: params.size,
       },
     };
+
     if (params.filter) {
       query['filter'] = params.filter;
     }

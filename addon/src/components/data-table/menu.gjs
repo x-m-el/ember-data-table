@@ -1,6 +1,7 @@
+import { hash } from '@ember/helper';
+
 import DataTableDataTableMenuGeneral from './menu-general.gjs';
 import DataTableDataTableMenuSelected from './menu-selected.gjs';
-import { hash } from '@ember/helper';
 
 /* Used in: data-table.hbs */
 <template>

@@ -1,4 +1,5 @@
 'use strict';
+
 const sideWatch = require('@embroider/broccoli-side-watch');
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
@@ -28,6 +29,7 @@ module.exports = function (defaults) {
   });
 
   const { maybeEmbroider } = require('@embroider/test-setup');
+
   return maybeEmbroider(app, {
     skipBabel: [
       {

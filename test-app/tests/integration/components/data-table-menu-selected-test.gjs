@@ -1,8 +1,9 @@
+import { tracked } from '@glimmer/tracking';
+import { click,render } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click } from '@ember/test-helpers';
+
 import RawDataTable from 'ember-data-table/components/raw-data-table';
-import { tracked } from '@glimmer/tracking';
 
 module('Integration | Component | data table menu selected', function (hooks) {
   setupRenderingTest(hooks);
@@ -42,6 +43,7 @@ module('Integration | Component | data table menu selected', function (hooks) {
       .hasText('1 item(s) selected', 'item count 1');
 
     const selection2 = [john, jane];
+
     await render(
       <template>
         <RawDataTable
@@ -86,11 +88,15 @@ module('Integration | Component | data table menu selected', function (hooks) {
     const jane = { firstName: 'Jane', lastName: 'Doe', age: 21 };
     const content = [john, jane];
     const fields = ['firstName', 'lastName', 'age'];
+
     class Context {
       @tracked selection;
     }
+
     const context = new Context();
+
     context.selection = [john];
+
     const updateSelection = (newSelection) => {
       assert.true(newSelection.length === 0, 'selection is empty');
     };

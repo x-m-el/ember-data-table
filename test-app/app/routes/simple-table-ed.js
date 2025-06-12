@@ -1,6 +1,6 @@
-import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 import Route from '@ember/routing/route';
+import { inject as service } from '@ember/service';
 
 export default class AdvTableEdRoute extends Route {
   @service store;
@@ -21,9 +21,11 @@ export default class AdvTableEdRoute extends Route {
         size: params.size,
       },
     };
+
     if (params.filter) {
       options['filter'] = params.filter;
     }
+
     return this.store.query(this.modelName, options);
   }
 

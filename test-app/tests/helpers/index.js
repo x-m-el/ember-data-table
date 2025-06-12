@@ -41,6 +41,7 @@ function setupTest(hooks, options) {
 
 function generatePaginationMeta(page, size, count) {
   const pages = Math.floor(count / size);
+
   return {
     count: count,
     pagination: {
@@ -52,4 +53,4 @@ function generatePaginationMeta(page, size, count) {
   };
 }
 
-export { setupApplicationTest, setupRenderingTest, setupTest, generatePaginationMeta };
+export { generatePaginationMeta,setupApplicationTest, setupRenderingTest, setupTest };

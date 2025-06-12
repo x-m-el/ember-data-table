@@ -1,7 +1,8 @@
-import { babel } from '@rollup/plugin-babel';
 import { Addon } from '@embroider/addon-dev/rollup';
+import { dirname,resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { resolve, dirname } from 'node:path';
+
+import { babel } from '@rollup/plugin-babel';
 import scss from 'rollup-plugin-scss';
 
 const addon = new Addon({

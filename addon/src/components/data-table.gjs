@@ -1,23 +1,25 @@
-import { action } from '@ember/object';
-import { tracked } from '@glimmer/tracking';
-import { isEmpty } from '@ember/utils';
 import Component from '@glimmer/component';
-import { typeOf } from '@ember/utils';
-import {
-  toComponentSpecification,
-  definitionsToArray,
-} from '../utils/string-specification-helpers';
+import { tracked } from '@glimmer/tracking';
+import { assert } from '@ember/debug';
+import { hash } from '@ember/helper';
+import { action } from '@ember/object';
+import { isEmpty , typeOf } from '@ember/utils';
+
+import { or } from 'ember-truth-helpers';
+
 import attributeToSortParams from '../utils/attribute-to-sort-params';
 import get from '../utils/get';
-import { hash } from '@ember/helper';
-import DataTableTextSearch from './data-table/text-search.gjs';
+import {
+  definitionsToArray,
+  toComponentSpecification,
+} from '../utils/string-specification-helpers';
 import DataTableDataTableContent from './data-table/content.gjs';
-import DataTableNumberPagination from './data-table/number-pagination.gjs';
 import DataTableDataTableMenu from './data-table/menu.gjs';
-import { or } from 'ember-truth-helpers';
-import { assert } from '@ember/debug';
+import DataTableNumberPagination from './data-table/number-pagination.gjs';
+import DataTableTextSearch from './data-table/text-search.gjs';
 
 const DEFAULT_DEBOUNCE_TIME = 2000;
+
 export default class DataTable extends Component {
   <template>
     {{yield
@@ -96,6 +98,7 @@ export default class DataTable extends Component {
   set selection(newSelection) {
     if (this.args.selection !== undefined) {
       const updater = this.args.updateSelection;
+
       if(!updater) {
         assert(
           `Could not update selection because @updateSelection was not supplied to data table, but @selection was.`,
@@ -156,13 +159,16 @@ export default class DataTable extends Component {
         : definitionsToArray(this.args.sizes).map((nrOrStr) =>
             parseInt(nrOrStr),
           );
+
     if (isEmpty(sizeOptions)) {
       return null;
     } else {
       if (!sizeOptions.includes(this.size) && this.size) {
         sizeOptions.push(this.size);
       }
+
       sizeOptions.sort((a, b) => a - b);
+
       return sizeOptions;
     }
   }
@@ -252,6 +258,7 @@ export default class DataTable extends Component {
 
   get customHeaders() {
     const headers = this.args.customHeaders;
+
     if (typeOf(headers) === 'object') {
       return Object.keys(headers).filter((attr) => isEmpty(headers[attr]));
     } else {
@@ -261,6 +268,7 @@ export default class DataTable extends Component {
 
   get customFields() {
     const fields = this.args.customFields;
+
     if (typeOf(fields) === 'object') {
       return Object.keys(fields).filter((attr) => isEmpty(fields[attr]));
     } else {
@@ -270,16 +278,19 @@ export default class DataTable extends Component {
 
   get customFieldComponents() {
     const fields = this.args.customFields;
+
     return typeOf(fields) === 'object' ? fields : {};
   }
 
   get customHeaderComponents() {
     const headers = this.args.customHeaders;
+
     return typeOf(headers) === 'object' ? headers : {};
   }
 
   get sortableFields() {
     const sortableFields = this.args.sortableFields;
+
     if (sortableFields || sortableFields === '')
       return definitionsToArray(sortableFields);
     // default: all fields are sortable
@@ -295,6 +306,7 @@ export default class DataTable extends Component {
   @action
   updatePageSize(size) {
     const updater = this.args.updatePageSize;
+
     if (!updater) {
       assert(
         `Could not update page size to ${size} because @updatePageSize was not supplied to data table`,
@@ -322,6 +334,7 @@ export default class DataTable extends Component {
   @action
   updateSort(sort) {
     const updater = this.args.updateSort;
+
     if (!updater) {
       assert(
         `Could not update sorting to '${sort}' because @updateSort was not supplied to data table`,
@@ -335,6 +348,7 @@ export default class DataTable extends Component {
   @action
   updatePage(page) {
     const updater = this.args.updatePage;
+
     if (!updater) {
       console.error(
         `Could not update page to ${page} because @updatePage was not supplied to data table`,
@@ -352,6 +366,7 @@ export default class DataTable extends Component {
   @action
   removeItemFromSelection(item) {
     const byPath = this.args.selectionProperty;
+
     this.selection = this.selection.filter(
       (x) => get(x, byPath) !== get(item, byPath),
     );

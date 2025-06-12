@@ -1,7 +1,9 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
+
 import and from 'ember-truth-helpers/helpers/and';
 import or from 'ember-truth-helpers/helpers/or';
+
 import DataTableRow from './row.gjs';
 
 /* Used in: data-table/content */
@@ -46,9 +48,11 @@ export default class DataTableContentBodyComponent extends Component {
     var offset = 1; //to avoid having 0. row
     var page = this.args.dataTable.page; // TODO: pass on page directly?
     var size = this.args.dataTable.size; // TODO: pass on size directly?
+
     if (page && size) {
       offset += page * size;
     }
+
     return offset;
   }
 

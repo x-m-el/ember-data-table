@@ -8,7 +8,7 @@
   "include": [
     "**/*.js",
     "**/*.gjs"
-  ],
+, "ember-cli-build.js", "eslint.config.mjs", "stylelint.config.mjs"  ],
   "glint": {
     "environment": [
       "ember-loose",

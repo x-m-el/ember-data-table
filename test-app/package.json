@@ -19,7 +19,7 @@
   "scripts": {
     "build": "ember build --environment=production",
     "lint": "concurrently \"npm:lint:*(!fix)\" --names \"lint:\"",
-    "lint:css": "stylelint \"**/*.css\"",
+    "lint:css": "stylelint \"**/*.css\" --allow-empty-input",
     "lint:css:fix": "concurrently \"npm:lint:css -- --fix\"",
     "lint:fix": "concurrently \"npm:lint:*:fix\" --names \"fix:\"",
     "lint:hbs": "ember-template-lint .",
@@ -38,11 +38,12 @@
     "@ember/test-helpers": "^5.2.2",
     "@embroider/broccoli-side-watch": "^1.1.0",
     "@embroider/test-setup": "^4.0.0",
-    "@glimmer/component": "^1.1.2",
+    "@glimmer/component": "^2.0.0",
     "@glint/core": "^1.5.2",
     "@glint/environment-ember-loose": "^1.5.2",
     "@glint/environment-ember-template-imports": "^1.5.2",
     "@glint/template": "^1.5.2",
+    "@nullvoxpopuli/eslint-configs": "^5.1.2",
     "@types/qunit": "^2.19.12",
     "broccoli-asset-rev": "^3.0.0",
     "concurrently": "^8.2.2",
@@ -70,29 +71,28 @@
     "ember-template-imports": "^4.3.0",
     "ember-template-lint": "^6.0.0",
     "ember-try": "^3.0.0",
-    "eslint": "^8.57.1",
+    "eslint": "^9.28.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-ember": "^12.2.1",
     "eslint-plugin-n": "^16.6.2",
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-qunit": "^8.1.2",
     "loader.js": "^4.7.0",
-    "phantomjs-prebuilt": "^2.1.16",
     "prettier": "^3.3.3",
     "prettier-plugin-ember-template-tag": "^2.0.5",
     "qunit": "^2.22.0",
     "qunit-dom": "^3.2.1",
     "sass": "^1.89.0",
-    "stylelint": "^15.11.0",
-    "stylelint-config-standard": "^34.0.0",
-    "stylelint-prettier": "^4.1.0",
+    "stylelint": "^16.20.0",
+    "stylelint-config-standard": "^38.0.0",
+    "stylelint-prettier": "^5.0.3",
     "webpack": "^5.95.0"
   },
   "peerDependencies": {
     "ember-source": ">= 4.0.0"
   },
   "engines": {
-    "node": ">= 18"
+    "node": ">= 22"
   },
   "ember": {
     "edition": "octane"

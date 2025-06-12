@@ -1,4 +1,5 @@
 import { LinkTo } from '@ember/routing';
+
 <template>
   <ul>
     <li><LinkTo @route="simple-table-ed">Simple table (ember-data)</LinkTo></li>

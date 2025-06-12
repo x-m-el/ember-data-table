@@ -1,5 +1,5 @@
 import Component from '@glimmer/component';
-import { hash, get } from '@ember/helper';
+import { get,hash } from '@ember/helper';
 
 /* Used in: data-table/data-cells */
 export default class DataTableDataCellComponent extends Component {

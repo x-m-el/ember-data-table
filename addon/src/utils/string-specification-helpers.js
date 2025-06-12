@@ -1,5 +1,6 @@
-import upperFirst from "lodash.upperfirst";
 import { typeOf } from "@ember/utils";
+
+import upperFirst from "lodash.upperfirst";
 
 /**
  * Splits a string of definitions by space.
@@ -29,6 +30,7 @@ export function deUnderscoreString(string) {
 
   // executing this with a regex turned out to be less clear
   let idx = 0;
+
   while( idx < string.length ) {
     let current = string[idx];
     let next = string[idx+1];
@@ -44,6 +46,7 @@ export function deUnderscoreString(string) {
       idx = idx + 1;
     }
   }
+
   return arrString.join("");
 }
 
@@ -81,6 +84,7 @@ export function toComponentSpecification(specification, configuration) {
   const component = (i, key, parser = (str) => str) => {
     if(typeOf(specification) === 'string') {
       const spec = specification.split(':')[i] || null;
+
       return spec && parser(spec)
     }else {
       return specification[key] || null;
@@ -89,6 +93,7 @@ export function toComponentSpecification(specification, configuration) {
 
   for (let i = 0; i < configuration.length; i++) {
     let spec = configuration[i];
+
     if (typeOf(spec) === 'string') {
       spec = { name: spec };
     }
@@ -112,5 +117,6 @@ export function toComponentSpecification(specification, configuration) {
       obj[spec.name] = obj[spec.default];
     }
   }
+
   return obj;
 }

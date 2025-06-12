@@ -1,7 +1,6 @@
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
 import { action } from '@ember/object';
-
 import { restartableTask, timeout } from 'ember-concurrency';
 
 /* Used in: data-table.hbs */

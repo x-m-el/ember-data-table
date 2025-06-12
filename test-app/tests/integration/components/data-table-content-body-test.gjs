@@ -1,13 +1,15 @@
+import { tracked } from '@glimmer/tracking';
+import { fn } from '@ember/helper';
+import { renderSettled } from '@ember/renderer';
+import { LinkTo } from '@ember/routing';
+import { click, render } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { click, render } from '@ember/test-helpers';
+
 import RawDataTable from 'ember-data-table/components/raw-data-table';
 import { or } from 'ember-truth-helpers';
-import { LinkTo } from '@ember/routing';
-import { tracked } from '@glimmer/tracking';
-import { renderSettled } from '@ember/renderer';
+
 import { generatePaginationMeta } from '../../helpers';
-import { fn } from '@ember/helper';
 
 module('Integration | Component | data table content body', function (hooks) {
   setupRenderingTest(hooks);
@@ -51,7 +53,9 @@ module('Integration | Component | data table content body', function (hooks) {
     class Context {
       @tracked enableSelection;
     }
+
     const context = new Context();
+
     context.enableSelection = true;
 
     await render(
@@ -83,7 +87,10 @@ module('Integration | Component | data table content body', function (hooks) {
 
     assert
       .dom('tbody>tr:first-child td')
-      .exists({ count: 3 }, 'reactivity: displays 3 columns when selection disabled');
+      .exists(
+        { count: 3 },
+        'reactivity: displays 3 columns when selection disabled',
+      );
     assert
       .dom('tbody>tr.selected')
       .doesNotExist('reactivity: no selected rows when selection disabled');
@@ -128,13 +135,17 @@ module('Integration | Component | data table content body', function (hooks) {
     const fields = ['firstName', 'lastName', 'age'];
     const selection = [];
     const meta = generatePaginationMeta(0, 1, 3);
+
     class testContext {
       @tracked page = 0;
       @tracked size = 1;
       @tracked content;
     }
+
     const context = new testContext();
+
     context.content = [john];
+
     const changePage = (page) => {
       context.page = page;
       context.content = [content[page]];
@@ -181,7 +192,9 @@ module('Integration | Component | data table content body', function (hooks) {
     class testContext {
       @tracked enableLineNumbers;
     }
+
     const context = new testContext();
+
     context.enableLineNumbers = true;
 
     await render(
@@ -211,11 +224,16 @@ module('Integration | Component | data table content body', function (hooks) {
 
     assert
       .dom('tbody>tr:first-child td')
-      .exists({ count: 3 }, 'reactivity: displays 3 columns (no line numbers column) when line numbers disabled');
+      .exists(
+        { count: 3 },
+        'reactivity: displays 3 columns (no line numbers column) when line numbers disabled',
+      );
 
     context.enableLineNumbers = true;
+
     const page = 2;
     const size = 5;
+
     await render(
       <template>
         <RawDataTable
@@ -248,11 +266,15 @@ module('Integration | Component | data table content body', function (hooks) {
     const jeff = { firstName: 'Jeff', lastName: 'Doe', age: 22 };
     const content = [john, jane, jeff];
     const fields = ['firstName', 'lastName', 'age'];
+
     class Context {
       @tracked selection;
     }
+
     const context = new Context();
+
     context.selection = [jane];
+
     const updateSelection = (newSelection) => {
       context.selection = newSelection;
     };
@@ -312,6 +334,7 @@ module('Integration | Component | data table content body', function (hooks) {
       .hasText('No data', 'displays message "No data" if no content');
 
     const emptyContent = [];
+
     await render(
       <template>
         <RawDataTable
@@ -329,6 +352,7 @@ module('Integration | Component | data table content body', function (hooks) {
       .hasText('No data', 'displays message "No data" if empty content');
 
     const content = ['foo', 'bar'];
+
     await render(
       <template>
         <RawDataTable
@@ -347,54 +371,93 @@ module('Integration | Component | data table content body', function (hooks) {
     class testContext {
       @tracked links;
     }
+
     const context = new testContext();
+
     context.links = [
       'edit',
       'edit:Edit_Link',
       'edit:Edit_Link:icon-reference',
-      { route: 'edit'},
+      { route: 'edit' },
       { route: 'edit', label: 'Edit:Link' },
       { route: 'edit', label: 'Edit:Link', icon: 'icon:reference' },
     ];
-    const content = [{ id: 1, name: 'John Doe' }, { id: 2, name: 'Jane Doe' }];
+
+    const content = [
+      { id: 1, name: 'John Doe' },
+      { id: 2, name: 'Jane Doe' },
+    ];
 
     await render(
       <template>
-        <RawDataTable @content={{content}} @fields="name" @links={{context.links}} />
+        <RawDataTable
+          @content={{content}}
+          @fields="name"
+          @links={{context.links}}
+        />
       </template>,
     );
 
-    assert.dom('tbody>tr:first-child td:nth-child(2) a:first-child').hasText('edit', 'string config: renders edit link');
-    assert.dom('tbody>tr:first-child td:nth-child(2) a:nth-child(2)').hasText('Edit Link', 'string config: renders edit link with label');
-    assert.dom('tbody>tr:first-child td:nth-child(2) a:nth-child(3)').hasText('Edit Link', 'string config: renders icon edit link with label');
-    assert.dom('tbody>tr:first-child td:nth-child(2) a:nth-child(4)').hasText('edit', 'object config: renders edit link');
-    assert.dom('tbody>tr:first-child td:nth-child(2) a:nth-child(5)').hasText('Edit:Link', 'object config: renders edit link with label');
-    assert.dom('tbody>tr:first-child td:nth-child(2) a:nth-child(6)').hasText('Edit:Link', 'object config: renders icon edit link with label');
+    assert
+      .dom('tbody>tr:first-child td:nth-child(2) a:first-child')
+      .hasText('edit', 'string config: renders edit link');
+    assert
+      .dom('tbody>tr:first-child td:nth-child(2) a:nth-child(2)')
+      .hasText('Edit Link', 'string config: renders edit link with label');
+    assert
+      .dom('tbody>tr:first-child td:nth-child(2) a:nth-child(3)')
+      .hasText('Edit Link', 'string config: renders icon edit link with label');
+    assert
+      .dom('tbody>tr:first-child td:nth-child(2) a:nth-child(4)')
+      .hasText('edit', 'object config: renders edit link');
+    assert
+      .dom('tbody>tr:first-child td:nth-child(2) a:nth-child(5)')
+      .hasText('Edit:Link', 'object config: renders edit link with label');
+    assert
+      .dom('tbody>tr:first-child td:nth-child(2) a:nth-child(6)')
+      .hasText('Edit:Link', 'object config: renders icon edit link with label');
 
-    assert.dom('tbody>tr:nth-child(2) td:nth-child(2) a:first-child').hasText('edit', 'string config: renders edit link');
-    assert.dom('tbody>tr:nth-child(2) td:nth-child(2) a:nth-child(2)').hasText('Edit Link', 'string config: renders edit link with label');
-    assert.dom('tbody>tr:nth-child(2) td:nth-child(2) a:nth-child(3)').hasText('Edit Link', 'string config: renders icon edit link with label');
-    assert.dom('tbody>tr:nth-child(2) td:nth-child(2) a:nth-child(4)').hasText('edit', 'object config: renders edit link');
-    assert.dom('tbody>tr:nth-child(2) td:nth-child(2) a:nth-child(5)').hasText('Edit:Link', 'object config: renders edit link with label');
-    assert.dom('tbody>tr:nth-child(2) td:nth-child(2) a:nth-child(6)').hasText('Edit:Link', 'object config: renders icon edit link with label');
+    assert
+      .dom('tbody>tr:nth-child(2) td:nth-child(2) a:first-child')
+      .hasText('edit', 'string config: renders edit link');
+    assert
+      .dom('tbody>tr:nth-child(2) td:nth-child(2) a:nth-child(2)')
+      .hasText('Edit Link', 'string config: renders edit link with label');
+    assert
+      .dom('tbody>tr:nth-child(2) td:nth-child(2) a:nth-child(3)')
+      .hasText('Edit Link', 'string config: renders icon edit link with label');
+    assert
+      .dom('tbody>tr:nth-child(2) td:nth-child(2) a:nth-child(4)')
+      .hasText('edit', 'object config: renders edit link');
+    assert
+      .dom('tbody>tr:nth-child(2) td:nth-child(2) a:nth-child(5)')
+      .hasText('Edit:Link', 'object config: renders edit link with label');
+    assert
+      .dom('tbody>tr:nth-child(2) td:nth-child(2) a:nth-child(6)')
+      .hasText('Edit:Link', 'object config: renders icon edit link with label');
 
     context.links = [];
     await renderSettled();
 
-    assert.dom('tbody>tr:first-child td:nth-child(2) a').doesNotExist('reactivity: no links when links is empty');
+    assert
+      .dom('tbody>tr:first-child td:nth-child(2) a')
+      .doesNotExist('reactivity: no links when links is empty');
   });
 
   test('@links property data is provided for :actions: block', async function (assert) {
     const links = [
-        'edit',
-        'edit:Edit_Link',
-        'edit:Edit_Link:icon-reference',
-        { route: 'edit'},
-        { route: 'edit', label: 'Edit:Link' },
-        { route: 'edit', label: 'Edit:Link', icon: 'icon:reference' },
+      'edit',
+      'edit:Edit_Link',
+      'edit:Edit_Link:icon-reference',
+      { route: 'edit' },
+      { route: 'edit', label: 'Edit:Link' },
+      { route: 'edit', label: 'Edit:Link', icon: 'icon:reference' },
     ];
 
-    const content = [{ id: 1, name: 'John Doe' }, { id: 2, name: 'Jane Doe' }];
+    const content = [
+      { id: 1, name: 'John Doe' },
+      { id: 2, name: 'Jane Doe' },
+    ];
 
     await render(
       <template>
@@ -402,106 +465,220 @@ module('Integration | Component | data table content body', function (hooks) {
           <:actions as |row|>
             <td>
               test
-              {{#each row.linkedRoutes as |linkedRoute| }}
+              {{#each row.linkedRoutes as |linkedRoute|}}
                 {{linkedRoute.route}}
                 <LinkTo
                   @route={{linkedRoute.route}}
                   @model={{linkedRoute.model}}
                 >
-                  model: {{linkedRoute.model}}
+                  model:
+                  {{linkedRoute.model}}
                   {{#if linkedRoute.icon}} icon: {{linkedRoute.icon}} {{/if}}
-                  {{!-- this is the same logic as raw-data-table --}}
-                  {{or
-                    linkedRoute.label
-                    linkedRoute.route
-                  }}
+                  {{! this is the same logic as raw-data-table }}
+                  {{or linkedRoute.label linkedRoute.route}}
                 </LinkTo>
               {{/each}}
             </td>
           </:actions>
         </RawDataTable>
-      </template>
+      </template>,
     );
 
-    assert.dom('tbody>tr:first-child td a:first-child').hasText('model: 1 edit', 'string config: renders edit link');
-    assert.dom('tbody>tr:first-child td a:nth-child(2)').hasText('model: 1 Edit Link', 'string config: renders edit link with label');
-    assert.dom('tbody>tr:first-child td a:nth-child(3)').hasText('model: 1 icon: icon-reference Edit Link', 'string config: renders icon edit link with label');
-    assert.dom('tbody>tr:first-child td a:nth-child(4)').hasText('model: 1 edit', 'object config: renders edit link');
-    assert.dom('tbody>tr:first-child td a:nth-child(5)').hasText('model: 1 Edit:Link', 'object config: renders edit link with label');
-    assert.dom('tbody>tr:first-child td a:nth-child(6)').hasText('model: 1 icon: icon:reference Edit:Link', 'object config: renders icon edit link with label');
+    assert
+      .dom('tbody>tr:first-child td a:first-child')
+      .hasText('model: 1 edit', 'string config: renders edit link');
+    assert
+      .dom('tbody>tr:first-child td a:nth-child(2)')
+      .hasText(
+        'model: 1 Edit Link',
+        'string config: renders edit link with label',
+      );
+    assert
+      .dom('tbody>tr:first-child td a:nth-child(3)')
+      .hasText(
+        'model: 1 icon: icon-reference Edit Link',
+        'string config: renders icon edit link with label',
+      );
+    assert
+      .dom('tbody>tr:first-child td a:nth-child(4)')
+      .hasText('model: 1 edit', 'object config: renders edit link');
+    assert
+      .dom('tbody>tr:first-child td a:nth-child(5)')
+      .hasText(
+        'model: 1 Edit:Link',
+        'object config: renders edit link with label',
+      );
+    assert
+      .dom('tbody>tr:first-child td a:nth-child(6)')
+      .hasText(
+        'model: 1 icon: icon:reference Edit:Link',
+        'object config: renders icon edit link with label',
+      );
 
-    assert.dom('tbody>tr:nth-child(2) td a:first-child').hasText('model: 2 edit', '2nd column: string config: renders edit link');
-    assert.dom('tbody>tr:nth-child(2) td a:nth-child(2)').hasText('model: 2 Edit Link', '2nd column: string config: renders edit link with label');
-    assert.dom('tbody>tr:nth-child(2) td a:nth-child(3)').hasText('model: 2 icon: icon-reference Edit Link', '2nd column: string config: renders icon edit link with label');
-    assert.dom('tbody>tr:nth-child(2) td a:nth-child(4)').hasText('model: 2 edit', '2nd column: object config: renders edit link');
-    assert.dom('tbody>tr:nth-child(2) td a:nth-child(5)').hasText('model: 2 Edit:Link', '2nd column: object config: renders edit link with label');
-    assert.dom('tbody>tr:nth-child(2) td a:nth-child(6)').hasText('model: 2 icon: icon:reference Edit:Link', '2nd column: object config: renders icon edit link with label');
+    assert
+      .dom('tbody>tr:nth-child(2) td a:first-child')
+      .hasText('model: 2 edit', '2nd column: string config: renders edit link');
+    assert
+      .dom('tbody>tr:nth-child(2) td a:nth-child(2)')
+      .hasText(
+        'model: 2 Edit Link',
+        '2nd column: string config: renders edit link with label',
+      );
+    assert
+      .dom('tbody>tr:nth-child(2) td a:nth-child(3)')
+      .hasText(
+        'model: 2 icon: icon-reference Edit Link',
+        '2nd column: string config: renders icon edit link with label',
+      );
+    assert
+      .dom('tbody>tr:nth-child(2) td a:nth-child(4)')
+      .hasText('model: 2 edit', '2nd column: object config: renders edit link');
+    assert
+      .dom('tbody>tr:nth-child(2) td a:nth-child(5)')
+      .hasText(
+        'model: 2 Edit:Link',
+        '2nd column: object config: renders edit link with label',
+      );
+    assert
+      .dom('tbody>tr:nth-child(2) td a:nth-child(6)')
+      .hasText(
+        'model: 2 icon: icon:reference Edit:Link',
+        '2nd column: object config: renders icon edit link with label',
+      );
   });
 
   test('@linksModelProperty adds model to the link', async function (assert) {
     const links = [
-        'edit',
-        'edit:Edit_Link',
-        'edit:Edit_Link:icon-reference',
-        { route: 'edit'},
-        { route: 'edit', label: 'Edit:Link' },
-        { route: 'edit', label: 'Edit:Link', icon: 'icon:reference' },
+      'edit',
+      'edit:Edit_Link',
+      'edit:Edit_Link:icon-reference',
+      { route: 'edit' },
+      { route: 'edit', label: 'Edit:Link' },
+      { route: 'edit', label: 'Edit:Link', icon: 'icon:reference' },
     ];
 
-    const content = [{ id: 1, name: 'John' }, { id: 2, name: 'Jane' }];
+    const content = [
+      { id: 1, name: 'John' },
+      { id: 2, name: 'Jane' },
+    ];
 
     await render(
       <template>
-        <RawDataTable @content={{content}} @fields="name" @links={{links}} @linksModelProperty="name">
+        <RawDataTable
+          @content={{content}}
+          @fields="name"
+          @links={{links}}
+          @linksModelProperty="name"
+        >
           <:actions as |row|>
             <td>
               test
-              {{#each row.linkedRoutes as |linkedRoute| }}
+              {{#each row.linkedRoutes as |linkedRoute|}}
                 {{linkedRoute.route}}
                 <LinkTo
                   @route={{linkedRoute.route}}
                   @model={{linkedRoute.model}}
                 >
-                  model: {{linkedRoute.model}}
+                  model:
+                  {{linkedRoute.model}}
                   {{#if linkedRoute.icon}} icon: {{linkedRoute.icon}} {{/if}}
-                  {{!-- this is the same logic as raw-data-table --}}
-                  {{or
-                    linkedRoute.label
-                    linkedRoute.route
-                  }}
+                  {{! this is the same logic as raw-data-table }}
+                  {{or linkedRoute.label linkedRoute.route}}
                 </LinkTo>
               {{/each}}
             </td>
           </:actions>
         </RawDataTable>
-      </template>
+      </template>,
     );
 
-    assert.dom('tbody>tr:first-child td a:first-child').hasText('model: John edit', 'string config: renders edit link');
-    assert.dom('tbody>tr:first-child td a:nth-child(2)').hasText('model: John Edit Link', 'string config: renders edit link with label');
-    assert.dom('tbody>tr:first-child td a:nth-child(3)').hasText('model: John icon: icon-reference Edit Link', 'string config: renders icon edit link with label');
-    assert.dom('tbody>tr:first-child td a:nth-child(4)').hasText('model: John edit', 'object config: renders edit link');
-    assert.dom('tbody>tr:first-child td a:nth-child(5)').hasText('model: John Edit:Link', 'object config: renders edit link with label');
-    assert.dom('tbody>tr:first-child td a:nth-child(6)').hasText('model: John icon: icon:reference Edit:Link', 'object config: renders icon edit link with label');
+    assert
+      .dom('tbody>tr:first-child td a:first-child')
+      .hasText('model: John edit', 'string config: renders edit link');
+    assert
+      .dom('tbody>tr:first-child td a:nth-child(2)')
+      .hasText(
+        'model: John Edit Link',
+        'string config: renders edit link with label',
+      );
+    assert
+      .dom('tbody>tr:first-child td a:nth-child(3)')
+      .hasText(
+        'model: John icon: icon-reference Edit Link',
+        'string config: renders icon edit link with label',
+      );
+    assert
+      .dom('tbody>tr:first-child td a:nth-child(4)')
+      .hasText('model: John edit', 'object config: renders edit link');
+    assert
+      .dom('tbody>tr:first-child td a:nth-child(5)')
+      .hasText(
+        'model: John Edit:Link',
+        'object config: renders edit link with label',
+      );
+    assert
+      .dom('tbody>tr:first-child td a:nth-child(6)')
+      .hasText(
+        'model: John icon: icon:reference Edit:Link',
+        'object config: renders icon edit link with label',
+      );
 
-    assert.dom('tbody>tr:nth-child(2) td a:first-child').hasText('model: Jane edit', '2nd column: string config: renders edit link');
-    assert.dom('tbody>tr:nth-child(2) td a:nth-child(2)').hasText('model: Jane Edit Link', '2nd column: string config: renders edit link with label');
-    assert.dom('tbody>tr:nth-child(2) td a:nth-child(3)').hasText('model: Jane icon: icon-reference Edit Link', '2nd column: string config: renders icon edit link with label');
-    assert.dom('tbody>tr:nth-child(2) td a:nth-child(4)').hasText('model: Jane edit', '2nd column: object config: renders edit link');
-    assert.dom('tbody>tr:nth-child(2) td a:nth-child(5)').hasText('model: Jane Edit:Link', '2nd column: object config: renders edit link with label');
-    assert.dom('tbody>tr:nth-child(2) td a:nth-child(6)').hasText('model: Jane icon: icon:reference Edit:Link', '2nd column: object config: renders icon edit link with label');
+    assert
+      .dom('tbody>tr:nth-child(2) td a:first-child')
+      .hasText(
+        'model: Jane edit',
+        '2nd column: string config: renders edit link',
+      );
+    assert
+      .dom('tbody>tr:nth-child(2) td a:nth-child(2)')
+      .hasText(
+        'model: Jane Edit Link',
+        '2nd column: string config: renders edit link with label',
+      );
+    assert
+      .dom('tbody>tr:nth-child(2) td a:nth-child(3)')
+      .hasText(
+        'model: Jane icon: icon-reference Edit Link',
+        '2nd column: string config: renders icon edit link with label',
+      );
+    assert
+      .dom('tbody>tr:nth-child(2) td a:nth-child(4)')
+      .hasText(
+        'model: Jane edit',
+        '2nd column: object config: renders edit link',
+      );
+    assert
+      .dom('tbody>tr:nth-child(2) td a:nth-child(5)')
+      .hasText(
+        'model: Jane Edit:Link',
+        '2nd column: object config: renders edit link with label',
+      );
+    assert
+      .dom('tbody>tr:nth-child(2) td a:nth-child(6)')
+      .hasText(
+        'model: Jane icon: icon:reference Edit:Link',
+        '2nd column: object config: renders icon edit link with label',
+      );
   });
 
   test('@onClickRow adds a click handler to the row', async function (assert) {
-    const content = [{ id: 1, name: 'John' }, { id: 2, name: 'Jane' }];
+    const content = [
+      { id: 1, name: 'John' },
+      { id: 2, name: 'Jane' },
+    ];
 
     const onClickRow = () => {
       assert.step('clicked');
-    }
+    };
+
     await render(
       <template>
-        <RawDataTable @content={{content}} @fields="name" @onClickRow={{onClickRow}} />
-      </template>
+        <RawDataTable
+          @content={{content}}
+          @fields="name"
+          @onClickRow={{onClickRow}}
+        />
+      </template>,
     );
 
     await click('tbody>tr:first-child');

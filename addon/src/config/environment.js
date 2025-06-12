@@ -1,5 +1,3 @@
-'use strict';
-
-module.exports = function (/* environment, appConfig */) {
+export default function (/* environment, appConfig */) {
   return {};
-};
+}

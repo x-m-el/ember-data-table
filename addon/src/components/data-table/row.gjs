@@ -1,9 +1,10 @@
-import { get } from '@ember/object';
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
+import { fn,hash } from '@ember/helper';
+import { action,get  } from '@ember/object';
 import { service } from '@ember/service';
-import { hash, fn } from '@ember/helper';
+
 import add from 'ember-math-helpers/helpers/add';
+
 import includesBy from '../../helpers/includes-by.js';
 import DataTableDataCells from './data-cells.gjs';
 
@@ -43,6 +44,7 @@ export default class DataTableRowComponent extends Component {
   get linkedRoutes() {
     return this.args.linkedRoutes.map((linkedRoute) => {
       const model = this.args.item;
+
       return Object.assign(
         {
           model: linkedRoute.linksModelProperty
@@ -56,6 +58,7 @@ export default class DataTableRowComponent extends Component {
 
   get rowLinkModel() {
     const { item, rowLinkModelProperty } = this.args;
+
     return rowLinkModelProperty ? get(item, rowLinkModelProperty) : item;
   }
 

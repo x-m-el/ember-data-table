@@ -1,20 +1,14 @@
+import { fillIn, render, waitUntil } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { fillIn, render, waitFor, waitUntil } from '@ember/test-helpers';
+
 import RawDataTable from 'ember-data-table/components/raw-data-table';
-import { fn } from '@ember/helper';
 
 module('Integration | Component | text search', function (hooks) {
   setupRenderingTest(hooks);
 
   test('it renders by default', async function (assert) {
-    await render(
-      <template>
-        <RawDataTable
-          @filter=""
-        />
-      </template>,
-    );
+    await render(<template><RawDataTable @filter="" /></template>);
     assert.dom('.raw-data-table .data-table-search').exists({ count: 1 });
   });
 
@@ -25,32 +19,34 @@ module('Integration | Component | text search', function (hooks) {
 
   test('it does not render if enableSearch is false', async function (assert) {
     await render(
-      <template>
-        <RawDataTable
-          @enableSearch={{false}}
-          @filter=""
-        />
-      </template>,
+      <template><RawDataTable @enableSearch={{false}} @filter="" /></template>,
     );
     assert.dom('.raw-data-table .data-table-search').doesNotExist();
   });
 
   test('@searchPlaceholder text is rendered', async function (assert) {
     const searchPlaceholder = 'Search Placeholder Text';
+
     await render(
       <template>
         <RawDataTable @searchPlaceholder={{searchPlaceholder}} @filter="" />
       </template>,
     );
-    assert.dom('.raw-data-table .data-table-search input').hasAttribute('placeholder', searchPlaceholder, 'renders @searchPlaceholder');
+    assert
+      .dom('.raw-data-table .data-table-search input')
+      .hasAttribute(
+        'placeholder',
+        searchPlaceholder,
+        'renders @searchPlaceholder',
+      );
   });
   test('@searchPlaceholder text can be empty', async function (assert) {
     await render(
-      <template>
-        <RawDataTable @searchPlaceholder="" @filter="" />
-      </template>,
+      <template><RawDataTable @searchPlaceholder="" @filter="" /></template>,
     );
-    assert.dom('.raw-data-table .data-table-search input').hasAttribute('placeholder', "", 'renders empty @searchPlaceholder');
+    assert
+      .dom('.raw-data-table .data-table-search input')
+      .hasAttribute('placeholder', '', 'renders empty @searchPlaceholder');
   });
 
   test('@autoSearch calls @updateFilter after delay', async function (assert) {
@@ -62,14 +58,22 @@ module('Integration | Component | text search', function (hooks) {
     await render(
       <template>
         <RawDataTable @filter="" @updateFilter={{updateFilter}} />
-      </template>
+      </template>,
     );
 
-    fillIn('.raw-data-table .data-table-search input','test search');
-    assert.strictEqual(filterValue, '', 'update of filter has a debounce delay');
+    fillIn('.raw-data-table .data-table-search input', 'test search');
+    assert.strictEqual(
+      filterValue,
+      '',
+      'update of filter has a debounce delay',
+    );
 
-    await waitUntil(() => filterValue != '', {timeout: 2000})
-    assert.strictEqual(filterValue, 'test search', 'filter updated after delay');
+    await waitUntil(() => filterValue != '', { timeout: 2000 });
+    assert.strictEqual(
+      filterValue,
+      'test search',
+      'filter updated after delay',
+    );
   });
   test('@autoSearch default: calls @updateFilter after delay', async function (assert) {
     let filterValue = '';
@@ -77,15 +81,25 @@ module('Integration | Component | text search', function (hooks) {
       filterValue = value;
     };
 
-    await render(<template>
-      <RawDataTable @filter="" @updateFilter={{updateFilter}} />
-    </template>);
+    await render(
+      <template>
+        <RawDataTable @filter="" @updateFilter={{updateFilter}} />
+      </template>,
+    );
 
-    fillIn('.raw-data-table .data-table-search input','test search');
-    assert.strictEqual(filterValue, '', 'update of filter has a debounce delay');
+    fillIn('.raw-data-table .data-table-search input', 'test search');
+    assert.strictEqual(
+      filterValue,
+      '',
+      'update of filter has a debounce delay',
+    );
 
-    await waitUntil(() => filterValue != '', {timeout: 2000})
-    assert.strictEqual(filterValue, 'test search', 'filter updated after delay');
+    await waitUntil(() => filterValue != '', { timeout: 2000 });
+    assert.strictEqual(
+      filterValue,
+      'test search',
+      'filter updated after delay',
+    );
   });
 
   test('@autoSearch=true calls @updateFilter after delay', async function (assert) {
@@ -94,15 +108,29 @@ module('Integration | Component | text search', function (hooks) {
       filterValue = value;
     };
 
-    await render(<template>
-      <RawDataTable @filter="" @updateFilter={{updateFilter}} @autoSearch={{true}} />
-    </template>);
+    await render(
+      <template>
+        <RawDataTable
+          @filter=""
+          @updateFilter={{updateFilter}}
+          @autoSearch={{true}}
+        />
+      </template>,
+    );
 
-    fillIn('.raw-data-table .data-table-search input','test search');
-    assert.strictEqual(filterValue, '', 'update of filter has a debounce delay');
+    fillIn('.raw-data-table .data-table-search input', 'test search');
+    assert.strictEqual(
+      filterValue,
+      '',
+      'update of filter has a debounce delay',
+    );
 
-    await waitUntil(() => filterValue != '', {timeout: 2000})
-    assert.strictEqual(filterValue, 'test search', 'filter updated after delay');
+    await waitUntil(() => filterValue != '', { timeout: 2000 });
+    assert.strictEqual(
+      filterValue,
+      'test search',
+      'filter updated after delay',
+    );
   });
 
   test('@autoSearch=number calls @updateFilter after small delay in ms', async function (assert) {
@@ -111,13 +139,23 @@ module('Integration | Component | text search', function (hooks) {
       filterValue = value;
     };
 
-    await render(<template>
-      <RawDataTable @filter="" @updateFilter={{updateFilter}} @autoSearch="10" />
-    </template>);
+    await render(
+      <template>
+        <RawDataTable
+          @filter=""
+          @updateFilter={{updateFilter}}
+          @autoSearch="10"
+        />
+      </template>,
+    );
 
-    fillIn('.raw-data-table .data-table-search input','test search');
-    await waitUntil(() => filterValue != '', {timeout: 10});
-    assert.strictEqual(filterValue, 'test search', 'update of filter has no debounce delay (10ms)');
+    fillIn('.raw-data-table .data-table-search input', 'test search');
+    await waitUntil(() => filterValue != '', { timeout: 10 });
+    assert.strictEqual(
+      filterValue,
+      'test search',
+      'update of filter has no debounce delay (10ms)',
+    );
   });
 
   test('@autoSearch=number calls @updateFilter after higher delay in ms', async function (assert) {
@@ -126,14 +164,28 @@ module('Integration | Component | text search', function (hooks) {
       filterValue = value;
     };
 
-    await render(<template>
-      <RawDataTable @filter="" @updateFilter={{updateFilter}} @autoSearch="4000" />
-    </template>);
+    await render(
+      <template>
+        <RawDataTable
+          @filter=""
+          @updateFilter={{updateFilter}}
+          @autoSearch="4000"
+        />
+      </template>,
+    );
 
-    fillIn('.raw-data-table .data-table-search input','test search');
+    fillIn('.raw-data-table .data-table-search input', 'test search');
     await new Promise((resolve) => setTimeout(resolve, 2000));
-    assert.strictEqual(filterValue, '', 'update of filter has higher than 2000ms debounce delay (4000ms)');
-    await waitUntil(() => filterValue != '', {timeout: 2000});
-    assert.strictEqual(filterValue, 'test search', 'update of filter after given debounce delay');
+    assert.strictEqual(
+      filterValue,
+      '',
+      'update of filter has higher than 2000ms debounce delay (4000ms)',
+    );
+    await waitUntil(() => filterValue != '', { timeout: 2000 });
+    assert.strictEqual(
+      filterValue,
+      'test search',
+      'update of filter after given debounce delay',
+    );
   });
 });

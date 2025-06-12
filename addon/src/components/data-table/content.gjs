@@ -1,8 +1,9 @@
 import Component from '@glimmer/component';
-import { toComponentSpecifications } from '../../utils/string-specification-helpers';
 import { hash } from '@ember/helper';
-import DataTableDataTableContentHeader from './content-header.gjs';
+
+import { toComponentSpecifications } from '../../utils/string-specification-helpers';
 import DataTableDataTableContentBody from './content-body.gjs';
+import DataTableDataTableContentHeader from './content-header.gjs';
 
 /* Used in: data-table.hbs */
 export default class DataTableContentComponent extends Component {
@@ -68,6 +69,7 @@ export default class DataTableContentComponent extends Component {
       'icon',
     ]).map((spec) => {
       spec.linksModelProperty = this.args.linksModelProperty;
+
       return spec;
     });
   }

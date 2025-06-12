@@ -1,6 +1,6 @@
-import { action } from '@ember/object';
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
+import { action } from '@ember/object';
 
 const humanPageOffset = 1; // humans assume the first page has number 1
 
@@ -217,6 +217,7 @@ export default class NumberPaginationComponent extends Component {
         const pages = [...new Set([...leftWindow, ...rightWindow])].sort(
           (a, b) => a - b,
         );
+
         if (pages.length == 6 && pages[2] < pages[3] - 1) {
           return [...leftWindow, more, ...rightWindow];
         } else {
@@ -229,15 +230,19 @@ export default class NumberPaginationComponent extends Component {
         );
         let prepend = [];
         let append = [];
+
         if (currentPageWindow.length) {
           const first = currentPageWindow[0];
+
           if (first > this.firstPage) {
             prepend =
               first == this.firstPage + 1
                 ? [this.firstPage]
                 : [this.firstPage, more];
           }
+
           const last = currentPageWindow[currentPageWindow.length - 1];
+
           if (last < this.lastPage) {
             append =
               last == this.lastPage - 1
@@ -245,6 +250,7 @@ export default class NumberPaginationComponent extends Component {
                 : [more, this.lastPage];
           }
         }
+
         return [...prepend, ...currentPageWindow, ...append];
       }
     } else {

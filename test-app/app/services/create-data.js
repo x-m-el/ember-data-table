@@ -50,6 +50,7 @@ export default class CreateDataService extends Service {
         modified: modified,
       });
     }
+
     this.generatedAmount = amount;
     this.generatedData = list;
 
@@ -58,6 +59,7 @@ export default class CreateDataService extends Service {
 
   generatePaginationMeta(page, size, count) {
     const pages = Math.floor(count / size);
+
     return {
       count: count,
       pagination: {
@@ -75,14 +77,17 @@ export default class CreateDataService extends Service {
 
   async queryPeople(query) {
     let people = this.generatePeople(100);
+
     if (query.sort) {
       const [sortOrder, sortType] = query.sort.startsWith('-')
         ? [-1, query.sort.slice(1)]
         : [1, query.sort];
+
       people.sort(
         (a, b) => sortOrder * this.compareAny(a[sortType], b[sortType])
       );
     }
+
     if (query.filter) {
       people = people.filter((p) =>
         `${p.firstname} ${p.lastname}`
@@ -90,9 +95,12 @@ export default class CreateDataService extends Service {
           .includes(query.filter.toLowerCase().trim())
       );
     }
+
     const count = people.length;
+
     if (query.page) {
       const start = query.page.number * query.page.size;
+
       people = people.slice(start, start + query.page.size);
       people.meta = this.generatePaginationMeta(
         query.page.number,
@@ -100,6 +108,7 @@ export default class CreateDataService extends Service {
         count
       );
     }
+
     return Promise.resolve(people);
   }
 }

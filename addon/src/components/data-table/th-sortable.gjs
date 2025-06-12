@@ -1,6 +1,6 @@
-import { action } from '@ember/object';
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
+import { action } from '@ember/object';
 
 /* Used in: data-table/content-header */
 export default class ThSortableComponent extends Component {
@@ -61,16 +61,19 @@ export default class ThSortableComponent extends Component {
 
   get availableSortOptions() {
     const options = [];
+
     Object.keys(this.sortParameters)
       .sort() // for asc and desc, asc first then desc, the rest also sorted for now
       .map((key) => options.push(key));
     options.push(''); // no sorting
+
     return options;
   }
 
   get nextSort() {
     // wrapping loop over availableSortOptions
     const opts = this.availableSortOptions;
+
     return opts[(opts.indexOf(this.sortDirection) + 1) % opts.length];
   }
 

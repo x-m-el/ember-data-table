@@ -1,10 +1,13 @@
-import pageTitle from 'ember-page-title/helpers/page-title';
-import RawDataTable from 'ember-data-table/components/raw-data-table';
 import { array, fn, hash } from '@ember/helper';
-import Allcaps from '../components/allcaps';
-import eq from 'ember-truth-helpers/helpers/eq';
 import { on } from '@ember/modifier';
+
+import RawDataTable from 'ember-data-table/components/raw-data-table';
+import pageTitle from 'ember-page-title/helpers/page-title';
+import eq from 'ember-truth-helpers/helpers/eq';
+
+import Allcaps from '../components/allcaps';
 import lastItem from '../helpers/lastItem';
+
 <template>
   {{pageTitle "Advanced table + objects"}}
   <div class="layout-row flex layout-align-center">

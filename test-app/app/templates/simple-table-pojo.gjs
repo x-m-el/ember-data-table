@@ -1,6 +1,8 @@
-import pageTitle from 'ember-page-title/helpers/page-title';
-import RawDataTable from 'ember-data-table/components/raw-data-table';
 import { fn } from '@ember/helper';
+
+import RawDataTable from 'ember-data-table/components/raw-data-table';
+import pageTitle from 'ember-page-title/helpers/page-title';
+
 <template>
   {{pageTitle "Simple table + objects"}}
 
