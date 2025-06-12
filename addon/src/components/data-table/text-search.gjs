@@ -1,7 +1,8 @@
-import { action } from '@ember/object';
-import { cancel, debounce } from '@ember/runloop';
 import Component from '@glimmer/component';
 import { hash } from '@ember/helper';
+import { action } from '@ember/object';
+
+import { restartableTask, timeout } from 'ember-concurrency';
 
 /* Used in: data-table.hbs */
 export default class TextSearchComponent extends Component {
@@ -20,40 +21,28 @@ export default class TextSearchComponent extends Component {
   </template>
   enteredValue = undefined;
 
-  autoDebouncePid = undefined;
+  debouncedSubmit = restartableTask(async () => {
+    await timeout(this.args.searchDebounceTime);
+    this.args.updateFilter(this.enteredValue);
+  });
 
   @action
   handleAutoInput(event) {
     this.enteredValue = event.target.value;
-    this.autoDebouncePid = debounce(
-      this,
-      this.submitCurrent,
-      this.args.searchDebounceTime,
-    );
+    this.debouncedSubmit.perform();
   }
 
   @action
   handleInput(event) {
     this.enteredValue = event.target.value;
+
     if (this.args.autoSearch !== false) {
-      this.autoDebouncePid = debounce(
-        this,
-        this.submitCurrent,
-        this.args.searchDebounceTime,
-      );
+      this.debouncedSubmit.perform();
     }
   }
 
   submitCurrent() {
-    if (!this.isDestroying && !this.isDestroyed) {
-      this.args.updateFilter(this.enteredValue);
-      this.autoDebouncePid = undefined;
-    }
-  }
-
-  willDestroy() {
-    super.willDestroy(...arguments);
-    cancel(this.autoDebouncePid);
+    this.args.updateFilter(this.enteredValue);
   }
 
   @action
