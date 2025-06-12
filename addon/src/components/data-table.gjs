@@ -80,6 +80,10 @@ export default class DataTable extends Component {
   }
 
   get selection() {
+    if(this.args.selection !== undefined) {
+      return this.args.selection;
+    }
+
     if (
       this._selection === undefined &&
       this.args.initialSelection === undefined
@@ -90,7 +94,19 @@ export default class DataTable extends Component {
   }
 
   set selection(newSelection) {
-    this._selection = newSelection; // also triggers dependent properties
+    if (this.args.selection !== undefined) {
+      const updater = this.args.updateSelection;
+      if(!updater) {
+        assert(
+          `Could not update selection because @updateSelection was not supplied to data table, but @selection was.`,
+        );
+      } else {
+        updater(newSelection);
+      }
+    } else {
+      this._selection = newSelection;
+    }
+
   }
 
   get noDataMessage() {
@@ -189,7 +205,7 @@ export default class DataTable extends Component {
     //        - if an object => use the object as is, override `attribute` and `label` with component specification logic
     // this always passing all parameters to `@fields`
     const fields = definitionsToArray(this.args.fields);
-    const fieldsWithMeta = fields.map(field => {
+    const fieldsWithMeta = fields.map((field) => {
       return {
         ...(typeOf(field) === 'string' ? {} : field),
         ...toComponentSpecification(field, [
@@ -224,8 +240,12 @@ export default class DataTable extends Component {
         hasCustomHeader:
           hasCustomHeader || this.customHeaders.includes(attribute),
         isCustom: isCustom || this.customFields.includes(attribute),
-        customFieldComponent: customFieldComponent || this.customFieldComponents[attribute] || null,
-        customHeaderComponent: customHeaderComponent || this.customHeaderComponents[attribute] || null,
+        customFieldComponent:
+          customFieldComponent || this.customFieldComponents[attribute] || null,
+        customHeaderComponent:
+          customHeaderComponent ||
+          this.customHeaderComponents[attribute] ||
+          null,
       }),
     );
   }
@@ -327,7 +347,7 @@ export default class DataTable extends Component {
   @action
   addItemToSelection(item) {
     this.removeItemFromSelection(item); // in case the item was already selected
-    this.selection = [...this.selection, item]; // create new array to trigger setter if `selection`
+    this.selection = [...this.selection, item]; // create new array to trigger setter of `selection`
   }
   @action
   removeItemFromSelection(item) {

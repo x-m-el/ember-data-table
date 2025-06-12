@@ -6,6 +6,8 @@ import { or } from 'ember-truth-helpers';
 import { LinkTo } from '@ember/routing';
 import { tracked } from '@glimmer/tracking';
 import { renderSettled } from '@ember/renderer';
+import { generatePaginationMeta } from '../../helpers';
+import { fn } from '@ember/helper';
 
 module('Integration | Component | data table content body', function (hooks) {
   setupRenderingTest(hooks);
@@ -118,6 +120,57 @@ module('Integration | Component | data table content body', function (hooks) {
       .isChecked('displays 2 checked checkboxes after selecting a row');
   });
 
+  test('keep selection intact over page changes', async function (assert) {
+    const john = { firstName: 'John', lastName: 'Doe', age: 20 };
+    const jane = { firstName: 'Jane', lastName: 'Doe', age: 21 };
+    const jeff = { firstName: 'Jeff', lastName: 'Doe', age: 22 };
+    const content = [john, jane, jeff];
+    const fields = ['firstName', 'lastName', 'age'];
+    const selection = [];
+    const meta = generatePaginationMeta(0, 1, 3);
+    class testContext {
+      @tracked page = 0;
+      @tracked size = 1;
+      @tracked content;
+    }
+    const context = new testContext();
+    context.content = [john];
+    const changePage = (page) => {
+      context.page = page;
+      context.content = [content[page]];
+    };
+
+    await render(
+      <template>
+        <RawDataTable
+          @content={{context.content}}
+          @fields={{fields}}
+          @enableSelection={{true}}
+          @initialSelection={{selection}}
+          @page={{context.page}}
+          @size={{context.size}}
+          @updatePage={{changePage}}
+          @updatePageSize={{fn (mut context.size)}}
+          @meta={{meta}}
+        />
+      </template>,
+    );
+
+    await click('tbody>tr:nth-child(1) input[type="checkbox"]');
+    assert
+      .dom('tbody>tr input[type="checkbox"]:checked')
+      .isChecked('displays 1 checked checkbox after selecting a row');
+
+    await click('.data-table-pagination-right button:nth-child(3)'); // Next button
+    assert
+      .dom('tbody>tr input[type="checkbox"]')
+      .isNotChecked('no selection on next page');
+    await click('.data-table-pagination-right button:nth-child(2)'); // Previous button
+    assert
+      .dom('tbody>tr input[type="checkbox"]:checked')
+      .isChecked('selection intact on first page after page change');
+  });
+
   test('add line numbers if enabled', async function (assert) {
     const john = { firstName: 'John', lastName: 'Doe', age: 20 };
     const jane = { firstName: 'Jane', lastName: 'Doe', age: 21 };
@@ -187,6 +240,53 @@ module('Integration | Component | data table content body', function (hooks) {
     assert
       .dom('tbody>tr:nth-child(3) td:first-child')
       .hasText('13', 'displays offset 13 on the third row of page 3');
+  });
+
+  test('@selection and @updateSelection work', async function (assert) {
+    const john = { firstName: 'John', lastName: 'Doe', age: 20 };
+    const jane = { firstName: 'Jane', lastName: 'Doe', age: 21 };
+    const jeff = { firstName: 'Jeff', lastName: 'Doe', age: 22 };
+    const content = [john, jane, jeff];
+    const fields = ['firstName', 'lastName', 'age'];
+    class Context {
+      @tracked selection;
+    }
+    const context = new Context();
+    context.selection = [jane];
+    const updateSelection = (newSelection) => {
+      context.selection = newSelection;
+    };
+
+    await render(
+      <template>
+        <RawDataTable
+          @content={{content}}
+          @fields={{fields}}
+          @enableSelection={{true}}
+          @selection={{context.selection}}
+          @updateSelection={{updateSelection}}
+        />
+      </template>,
+    );
+    assert
+      .dom('tbody>tr:nth-child(2) input[type="checkbox"]:checked')
+      .isChecked(
+        'displays 1 checked checkbox on second row before selecting another row',
+      );
+    await click('tbody>tr:first-child input[type="checkbox"]');
+    assert
+      .dom('tbody>tr:nth-child(1) input[type="checkbox"]:checked')
+      .isChecked(
+        'displays 2 checked checkboxes after selecting a row (first row)',
+      );
+    assert
+      .dom('tbody>tr:nth-child(2) input[type="checkbox"]:checked')
+      .isChecked(
+        'displays 2 checked checkboxes after selecting a row (second row)',
+      );
+    assert.propEqual(context.selection, [jane, john], 'selection is updated');
+    await click('tbody>tr:first-child input[type="checkbox"]');
+    assert.propEqual(context.selection, [jane], 'selection is updated');
   });
 
   test('displays no data message if there is no data', async function (assert) {

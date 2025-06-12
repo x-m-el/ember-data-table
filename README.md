@@ -352,6 +352,7 @@ Other keys can also be passed when using the object syntax. These take precedenc
   `:selection-menu-actions` or `:selection-menu` named blocks.
 - `@initialSelection` :: The selection to use as long as the user has not changed the selection yet.  
 - `@selectionProperty` :: By default equality will be checked by direct comparison of objects, which works for e.g. ember-data records. If a specific property should be used for comparison (e.g. `uuid` when using mu-search), a property name or path can be supplied.
+- `@selection` and `@updateSelection`: set the current selection and function that gets called when selection changes. This gives more control over handling selection logic.
 - `@linksModelProperty` :: When a link is clicked the row must supply
   information to the link to indicate which item was clicked.  By
   default the `id` property is used, but another property name or path may be

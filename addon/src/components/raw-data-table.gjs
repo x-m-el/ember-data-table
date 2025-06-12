@@ -42,6 +42,8 @@ export default <template>
     @enableSearch={{@enableSearch}}
     @enableSelection={{@enableSelection}}
     @initialSelection={{@initialSelection}}
+    @selection={{@selection}}
+    @updateSelection={{@updateSelection}}
     @selectionProperty={{@selectionProperty}}
     @noDataMessage={{@noDataMessage}}
     @isLoading={{@isLoading}}

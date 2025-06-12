@@ -2,6 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, click } from '@ember/test-helpers';
 import RawDataTable from 'ember-data-table/components/raw-data-table';
+import { tracked } from '@glimmer/tracking';
 
 module('Integration | Component | data table menu selected', function (hooks) {
   setupRenderingTest(hooks);
@@ -78,6 +79,37 @@ module('Integration | Component | data table menu selected', function (hooks) {
       .hasText('Cancel', 'renders a cancel button');
     await click('.data-table-menu button');
     assert.dom('.data-table-menu .item-count').doesNotExist();
+  });
+
+  test('sets empty selection for @updateSelection on cancel button click', async function (assert) {
+    const john = { firstName: 'John', lastName: 'Doe', age: 20 };
+    const jane = { firstName: 'Jane', lastName: 'Doe', age: 21 };
+    const content = [john, jane];
+    const fields = ['firstName', 'lastName', 'age'];
+    class Context {
+      @tracked selection;
+    }
+    const context = new Context();
+    context.selection = [john];
+    const updateSelection = (newSelection) => {
+      assert.true(newSelection.length === 0, 'selection is empty');
+    };
+
+    await render(
+      <template>
+        <RawDataTable
+          @content={{content}}
+          @fields={{fields}}
+          @enableSelection={{true}}
+          @selection={{context.selection}}
+          @updateSelection={{updateSelection}}
+        />
+      </template>,
+    );
+    assert
+      .dom('.data-table-menu button')
+      .hasText('Cancel', 'renders a cancel button');
+    await click('.data-table-menu button');
   });
 
   test('renders actions in selection-menu-actions block', async function (assert) {
