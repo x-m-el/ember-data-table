@@ -1,9 +1,7 @@
 import Component from '@glimmer/component';
-import { fn,hash } from '@ember/helper';
-import { action,get  } from '@ember/object';
+import { fn, hash } from '@ember/helper';
+import { action, get } from '@ember/object';
 import { service } from '@ember/service';
-
-import add from 'ember-math-helpers/helpers/add';
 
 import includesBy from '../../helpers/includes-by.js';
 import DataTableDataCells from './data-cells.gjs';
@@ -16,7 +14,7 @@ export default class DataTableRowComponent extends Component {
       (hash
         item=@item
         enableLineNumbers=@enableLineNumbers
-        lineNumber=(add @index @offset)
+        lineNumber=(this.add @index @offset)
         enableSelection=@enableSelection
         isSelected=(includesBy @selection @item @selectionProperty)
         toggleSelected=(fn @toggleSelected @item)
@@ -40,6 +38,8 @@ export default class DataTableRowComponent extends Component {
     }}
   </template>
   @service router;
+
+  add = (a, b) => a + b;
 
   get linkedRoutes() {
     return this.args.linkedRoutes.map((linkedRoute) => {
